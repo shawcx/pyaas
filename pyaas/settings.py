@@ -14,43 +14,23 @@ import pyaas
 
 pyaas.argparser = argparse.ArgumentParser()
 
-pyaas.argparser.add_argument('--user', '-u',
-    help='Path to user writable directory'
-    )
-
 pyaas.argparser.add_argument('--address', '-a',
-    help='Interface to bind to'
-    )
+    help='Interface to bind to')
 
 pyaas.argparser.add_argument('--port', '-p',
     type=int,
-    help='Port to bind to'
-    )
+    help='Port to bind to')
 
 pyaas.argparser.add_argument('--newcookie',
     action='store_true',
-    help='Generate a new cookie'
-    )
+    help='Generate a new cookie')
 
 pyaas.argparser.add_argument('--ini', '-i',
-    help='Specify additional ini file'
-    )
-
-pyaas.argparser.add_argument('--db',
-    help='Specify alternate database engine'
-    )
-
-# TODO: add option to overide database specific options
-
-pyaas.argparser.add_argument('--initdb',
-    action='store_true',
-    help='Initialize the database'
-    )
+    help='Specify additional ini file')
 
 pyaas.argparser.add_argument('--debug', '-d',
     action='store_true',
-    help='Print verbose debugging information'
-    )
+    help='Print verbose debugging information')
 
 def load(program=None):
     if program is None:

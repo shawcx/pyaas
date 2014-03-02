@@ -12,15 +12,11 @@ class error(Exception):
     def __str__(self):
         return self.str
 
-root = os.path.abspath(sys.prefix)
+root = sys.prefix
 
 def setroot(newroot):
     global root
-    root = newroot
-
-    # the root of the package directory
-    #root = os.path.dirname(__file__)
-    #root = os.path.join(root, 'data')
+    root = os.path.abspath(newroot)
 
 from . import settings
 from . import util

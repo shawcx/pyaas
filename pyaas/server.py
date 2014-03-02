@@ -11,6 +11,9 @@ except ImportError:
 import pyaas
 
 import tornado.web
+import tornado.ioloop
+
+pyaas.ioloop = tornado.ioloop.IOLoop.instance()
 
 from . import handlers
 
