@@ -20,7 +20,7 @@ print os.path.join('pyaas', 'skel.zip')
 
 setup(
     name = 'pyaas',
-    version = '0.1.2',
+    version = '0.1.3',
     author = 'Matthew Oertle',
     author_email = 'moertle@gmail.com',
     packages = [

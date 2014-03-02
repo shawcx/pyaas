@@ -6,7 +6,7 @@ import shutil
 import argparse
 import zipfile
 
-if '__main__' == __name__:
+def main():
     argparser = argparse.ArgumentParser()
 
     argparser.add_argument('--name', '-n',
@@ -37,3 +37,6 @@ if '__main__' == __name__:
         src = os.path.join(dstdir, src)
         dst = src.replace('example', args.name)
         os.rename(src, dst)
+
+if '__main__' == __name__:
+    main()
