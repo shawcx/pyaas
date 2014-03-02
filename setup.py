@@ -10,13 +10,9 @@ zf = zipfile.ZipFile(os.path.join('pyaas', 'skel.zip'), 'w')
 for base,directories,filenames in os.walk('skel'):
     for filename in filenames:
         path = os.path.join(base, filename)
-        print path
         zf.write(path, path[5:])
 
 zf.close()
-
-print '*' * 80
-print os.path.join('pyaas', 'skel.zip')
 
 setup(
     name = 'pyaas',
