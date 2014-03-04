@@ -16,7 +16,7 @@ zf.close()
 
 setup(
     name = 'pyaas',
-    version = '0.2.0',
+    version = '0.2.1',
     author = 'Matthew Oertle',
     author_email = 'moertle@gmail.com',
     packages = [
@@ -24,6 +24,8 @@ setup(
         'pyaas.handlers',
         'pyaas.handlers.auth',
         'pyaas.handlers.ws',
+        'pyaas.storage',
+        'pyaas.storage.engines',
         ],
     package_data = {
         'pyaas': ['skel.zip']
@@ -35,5 +37,5 @@ setup(
     install_requires = [
         "tornado >= 3.0",
     ],
-    zip_safe = True
+    zip_safe = False
 )
