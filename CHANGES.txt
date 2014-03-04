@@ -4,3 +4,4 @@ v0.1.2, 02-28-2014 -- More fixups
 v0.1.3, 02-28-2014 -- Added skeleton
 v0.1.4, 02-28-2014 -- Small fixes
 v0.1.5, 02-28-2014 -- Iron out kinks in publishing to pypi
+v0.2.0, 03-04-2014 -- Added storage engines
