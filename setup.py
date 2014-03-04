@@ -16,9 +16,13 @@ zf.close()
 
 setup(
     name = 'pyaas',
-    version = '0.2.1',
+    version = '0.2.2',
     author = 'Matthew Oertle',
     author_email = 'moertle@gmail.com',
+    url = 'https://github.com/moertle/pyaas',
+    license  = 'MIT',
+    description = 'Python-as-a-Service is a set of utilities for quickly creating Tornado applications.',
+    long_description = open('README.md').read(),
     packages = [
         'pyaas',
         'pyaas.handlers',
@@ -30,12 +34,21 @@ setup(
     package_data = {
         'pyaas': ['skel.zip']
         },
-    url = 'https://github.com/moertle/pyaas',
-    license  = 'MIT',
-    description = 'Python-as-a-Service is a set of utilities for quickly creating Tornado applications.',
-    long_description = open('README.md').read(),
     install_requires = [
         "tornado >= 3.0",
-    ],
+        ],
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Topic :: Internet :: WWW/HTTP",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.6",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.2",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
+        ],
     zip_safe = False
 )
