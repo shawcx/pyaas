@@ -16,13 +16,13 @@ zf.close()
 
 setup(
     name = 'pyaas',
-    version = '0.2.3',
+    version = '0.2.5',
     author = 'Matthew Oertle',
     author_email = 'moertle@gmail.com',
     url = 'https://github.com/moertle/pyaas',
     license  = 'MIT',
     description = 'Python-as-a-Service is a set of utilities for quickly creating Tornado applications.',
-    long_description = open('README.md').read(),
+    long_description = open('README.rst').read(),
     packages = [
         'pyaas',
         'pyaas.handlers',

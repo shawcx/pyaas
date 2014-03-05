@@ -1,3 +1,5 @@
+v0.2.5, 03-04-2014 -- Rst is not Markdown
+v0.2.4, 03-04-2014 -- Rst is not Markdown
 v0.2.3, 03-04-2014 -- Better setroot, cleaner example, more documentation
 v0.2.2, 03-04-2014 -- Small fixups
 v0.2.1, 03-04-2014 -- Storage fixups
