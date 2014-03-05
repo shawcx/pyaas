@@ -93,7 +93,7 @@ class Application(tornado.web.Application):
 
             # extend the patterns and settings accordingly
             self.patterns.extend([
-                ( r'/login',  Login                       ),
+                ( r'/login',  Login                      ),
                 ( r'/logout', pyaas.handlers.auth.Logout ),
                 ])
 
@@ -115,3 +115,7 @@ class Application(tornado.web.Application):
         logging.info('Listening on %s:%d', self.addr, self.port)
 
         pyaas.ioloop.start()
+
+    def Stop(self):
+        pyaas.ioloop.stop()
+

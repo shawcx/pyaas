@@ -16,7 +16,7 @@ zf.close()
 
 setup(
     name = 'pyaas',
-    version = '0.2.2',
+    version = '0.2.3',
     author = 'Matthew Oertle',
     author_email = 'moertle@gmail.com',
     url = 'https://github.com/moertle/pyaas',

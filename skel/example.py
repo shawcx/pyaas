@@ -6,10 +6,11 @@ import logging
 import pyaas
 
 # Set the root for pyaas to this directory
-pyaas.setroot(os.path.dirname(__file__))
+pyaas.util.setroot(os.path.dirname(__file__))
 
 def main():
     pyaas.settings.load()
+    pyaas.storage.initialize()
 
     app = pyaas.server.Application()
 
@@ -21,7 +22,7 @@ def main():
     try:
         app.Listen()
     except KeyboardInterrupt:
-        pyaas.ioloop.stop()
+        app.Stop()
 
 if '__main__' == __name__:
     try:

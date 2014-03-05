@@ -14,9 +14,7 @@ class error(Exception):
 
 root = sys.prefix
 
-def setroot(newroot):
-    global root
-    root = os.path.abspath(newroot)
+
 
 from . import settings
 from . import util

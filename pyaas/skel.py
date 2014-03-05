@@ -16,6 +16,8 @@ def main():
 
     args = argparser.parse_args()
 
+    print '>>>', args.name
+
     dstdir = os.path.join(os.getcwd(), os.path.basename(args.name))
     dstdir = os.path.abspath(dstdir)
 

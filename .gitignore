@@ -2,3 +2,4 @@ setup.cfg
 MANIFEST
 dist/
 pyaas/skel.zip
+*.pyc
