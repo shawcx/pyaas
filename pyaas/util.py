@@ -24,4 +24,12 @@ def setroot(newroot=None):
         # get the directory name of the file
         newroot = os.path.dirname(newroot)
 
+        print '>>>>>>>>', newroot
+
+        if newroot.endswith(os.path.sep + 'bin'):
+            newroot = os.path.join(newroot, '..')
+            newroot = os.path.abspath(newroot)
+
+            print '>>>>>>>>', newroot
+
     pyaas.root = os.path.abspath(newroot)

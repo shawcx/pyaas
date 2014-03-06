@@ -14,8 +14,6 @@ class error(Exception):
 
 root = sys.prefix
 
-
-
 from . import settings
 from . import util
 from . import server
