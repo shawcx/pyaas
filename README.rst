@@ -23,5 +23,6 @@ Edit the file ``example/etc/example.ini`` to tweak the configuration of the serv
 
 Hosted at `GitHub <https://github.com/moertle/pyaas>`_ and `PyPi <https://pypi.python.org/pypi/pyaas>`_
 
-People using pyaas::
-* `deploy.tk <http://github.com/moertle/deploy.tk>`_
+People using pyaas:
+
+- `deploy.tk <http://github.com/moertle/deploy.tk>`_
