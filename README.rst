@@ -12,7 +12,7 @@ Usage
     pip install pyaas
 
     # seed an example project in the named directory
-    python -m pyaas.skel example
+    python -m pyaas.skel --name example
 
     # start the seed project
     python example/example.py
