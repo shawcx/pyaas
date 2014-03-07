@@ -12,8 +12,10 @@ class error(Exception):
     def __str__(self):
         return self.str
 
-root = sys.prefix
 
 from . import settings
 from . import util
 from . import server
+
+util.setPrefix()
+util.setNameSpace('')

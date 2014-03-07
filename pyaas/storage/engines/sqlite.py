@@ -13,7 +13,7 @@ class Database:
         if path is None:
             path = ':memory:'
         else:
-            path = os.path.join(pyaas.root, path)
+            path = os.path.join(pyaas.prefix, path)
             # TODO: make any missing directories
 
         self.conn = sqlite3.connect(path)
@@ -21,7 +21,7 @@ class Database:
         self.cursor = self.conn.cursor()
 
     def Initialize(self):
-        schema = os.path.join(pyaas.root, pyaas.config.get('storage', 'schema'))
+        schema = os.path.join(pyaas.prefix, pyaas.config.get('storage', 'schema'))
         schema = open(schema, 'rb').read()
         self.cursor.executescript(schema)
         self.conn.commit()

@@ -45,8 +45,8 @@ def load(program=None):
     pyaas.config.optionxform = str
 
     ini_files = [
-        os.path.join(pyaas.root, 'etc', program + '.ini'),
-        os.path.join(pyaas.root, 'etc', program + '.ini.local')
+        os.path.join(pyaas.prefix, 'etc', pyaas.namespace, program + '.ini'),
+        os.path.join(pyaas.prefix, 'etc', pyaas.namespace, program + '.ini.local')
         ]
 
     if pyaas.args.ini:

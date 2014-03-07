@@ -10,13 +10,11 @@ def main():
     argparser = argparse.ArgumentParser()
 
     argparser.add_argument('--name', '-n',
-        default='example',
+        default='example', required=True,
         help='Name of the project to create'
         )
 
     args = argparser.parse_args()
-
-    print '>>>', args.name
 
     dstdir = os.path.join(os.getcwd(), os.path.basename(args.name))
     dstdir = os.path.abspath(dstdir)
@@ -35,8 +33,9 @@ def main():
 
     skel.extractall(dstdir)
 
+    os.chdir(dstdir)
+
     for src in ['example.py', os.path.join('etc', 'example.ini')]:
-        src = os.path.join(dstdir, src)
         dst = src.replace('example', args.name)
         os.rename(src, dst)
 

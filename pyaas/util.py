@@ -2,6 +2,7 @@
 import os
 import base64
 import inspect
+import logging
 
 import pyaas
 
@@ -13,23 +14,31 @@ def generateCookieSecret(path):
 
 # TODO: add functionality to manage basic authentication
 
-def setroot(newroot=None):
-    if not newroot:
+def setPrefix(prefix=None):
+    if not prefix:
         # inspect who called this function
         frames = inspect.getouterframes(inspect.currentframe())
         # get the caller frame
         frame = frames[1]
         # get the filename of the caller
-        newroot = os.path.abspath(frame[1])
+        prefix = os.path.abspath(frame[1])
         # get the directory name of the file
-        newroot = os.path.dirname(newroot)
+        prefix = os.path.dirname(prefix)
 
-        print '>>>>>>>>', newroot
+        if prefix.endswith(os.path.sep + 'bin'):
+            prefix = os.path.join(prefix, '..')
+            prefix = os.path.abspath(prefix)
 
-        if newroot.endswith(os.path.sep + 'bin'):
-            newroot = os.path.join(newroot, '..')
-            newroot = os.path.abspath(newroot)
+    pyaas.prefix = os.path.abspath(prefix)
+    logging.debug('Setting prefix to "%s"', pyaas.prefix)
 
-            print '>>>>>>>>', newroot
+def setNameSpace(namespace=None):
+    if namespace is None:
+        # inspect who called this function
+        frames = inspect.getouterframes(inspect.currentframe())
+        # get the caller frame
+        frame = frames[1]
+        namespace = frame[0].f_code.co_name
+        logging.debug('Setting namespace to "%s"', namespace)
 
-    pyaas.root = os.path.abspath(newroot)
+    pyaas.namespace = namespace

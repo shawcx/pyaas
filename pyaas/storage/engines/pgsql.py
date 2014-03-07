@@ -17,7 +17,7 @@ class Database:
         self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
     def Initialize(self):
-        schema = os.path.join(pyaas.root, pyaas.config.get('storage', 'schema'))
+        schema = os.path.join(pyaas.prefix, pyaas.config.get('storage', 'schema'))
         schema = open(schema, 'rb').read()
         self.cursor.execute(schema)
         self.conn.commit()

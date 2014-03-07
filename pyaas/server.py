@@ -24,7 +24,7 @@ class Application(tornado.web.Application):
         self.port = pyaas.args.port or pyaas.config.getint(section, 'port')
 
         # load the cookie secret used to encrypt cookies
-        cookie_path = os.path.join(pyaas.root, 'etc', 'cookie.secret')
+        cookie_path = os.path.join(pyaas.prefix, 'etc', pyaas.namespace, 'cookie.secret')
 
         if pyaas.args.newcookie:
             cookie_secret = pyaas.util.generateCookieSecret(cookie_path)
@@ -45,8 +45,8 @@ class Application(tornado.web.Application):
 
         # Tornado settings
         self.settings = dict(
-            static_path   = os.path.join(pyaas.root, 'static'),
-            template_path = os.path.join(pyaas.root, 'templates'),
+            static_path   = os.path.join(pyaas.prefix, 'share', pyaas.namespace, 'static'),
+            template_path = os.path.join(pyaas.prefix, 'share', pyaas.namespace, 'templates'),
             cookie_secret = cookie_secret,
             debug         = False
             )
