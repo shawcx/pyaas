@@ -7,47 +7,47 @@ import pyaas
 __all__ = ['Records', 'Record']
 
 class Records:
-    def __init__(self, entries):
-        self.entries = entries
+    def __init__(self, records):
+        self.records = records
 
     @classmethod
     def Read(cls, params=None, sort=None):
-        return cls(pyaas.db.Find(cls.ENTRY.__name__, params, sort))
+        return cls(pyaas.db.Find(cls.RECORD.__name__, params, sort))
 
     def Delete(self):
-        for entry in self.entries:
-            self.ENTRY(entry).Delete()
+        for record in self.records:
+            self.RECORD(record).Delete()
         pass
 
     @classmethod
     def Count(cls):
-        return pyaas.db.Count(cls.ENTRY.__name__)
+        return pyaas.db.Count(cls.RECORD.__name__)
 
 # List methods to iterate over the collection
 
     def __len__(self):
-        return len(self.entries)
+        return len(self.records)
 
     def __iter__(self):
-        for entry in self.entries:
-            yield self.ENTRY(entry)
+        for record in self.records:
+            yield self.RECORD(record)
 
     def __getitem__(self, idx):
-        return self.entries.__getitem__(idx)
+        return self.records.__getitem__(idx)
 
     @property
     def json(self):
-        return json.dumps([dict(e) for e in self.entries], separators=(',',':'))
+        return json.dumps([dict(e) for e in self.records], separators=(',',':'))
 
 
 
 class Record(object, UserDict.DictMixin):
-    def __init__(self, entry):
+    def __init__(self, record):
         try:
-            self.id = entry['id']
+            self.id = record['id']
         except KeyError:
             self.id = None
-        self.entry = dict(entry)
+        self.record = dict(record)
         self.Init()
 
     def Init(self):
@@ -60,20 +60,20 @@ class Record(object, UserDict.DictMixin):
         return cls(values).Insert()
 
     def Insert(self):
-        pyaas.db.Insert(self.__class__.__name__, self.entry)
+        pyaas.db.Insert(self.__class__.__name__, self.record)
         if self.id is None:
-            self.id = self.entry['id']
+            self.id = self.record['id']
         return self
 
     @classmethod
     def Read(cls, _id):
-        entry = pyaas.db.FindOne(cls.__name__, _id)
-        return cls(entry) if entry else None
+        record = pyaas.db.FindOne(cls.__name__, _id)
+        return cls(record) if record else None
 
     def Update(self, values=None):
         if values:
-            self.entry.update(values)
-        pyaas.db.Update(self.__class__.__name__, self.entry)
+            self.record.update(values)
+        pyaas.db.Update(self.__class__.__name__, self.record)
         return self
 
     def Delete(self):
@@ -84,28 +84,28 @@ class Record(object, UserDict.DictMixin):
 
     @property
     def json(self):
-        return json.dumps(dict(self.entry), separators=(',',':'))
+        return json.dumps(dict(self.record), separators=(',',':'))
 
-# Direct access of entries
+# Direct access of records
 
     def __getattr__(self, attr):
         try:
             return object.__getattribute__(self, attr)
         except AttributeError:
-            if attr in self.entry:
-                return self.entry[attr]
+            if attr in self.record:
+                return self.record[attr]
             raise
 
 # Dictionary methods to access the data
 
     def __getitem__(self, key):
-        return self.entry.__getitem__(key)
+        return self.record.__getitem__(key)
 
     def __setitem__(self, key, value):
-        return self.entry.__setitem__(key, value)
+        return self.record.__setitem__(key, value)
 
     def __delitem__(self, key):
-        return self.entry.__delitem__(key)
+        return self.record.__delitem__(key)
 
     def keys(self):
-        return self.entry.keys()
+        return self.record.keys()

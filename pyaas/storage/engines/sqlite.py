@@ -16,7 +16,11 @@ class Database:
             path = os.path.join(pyaas.prefix, path)
             # TODO: make any missing directories
 
-        self.conn = sqlite3.connect(path)
+        try:
+            self.conn = sqlite3.connect(path)
+        except sqlite3.OperationalError:
+            raise pyaas.error('Unable to open database: %s', path)
+
         self.conn.row_factory = sqlite3.Row
         self.cursor = self.conn.cursor()
 
