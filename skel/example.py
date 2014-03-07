@@ -25,7 +25,7 @@
 
 # -----------------------------------------------------------------------------
 
-# The above license only applies to the example project. The intent is to allow
+# The above license applies only to the example project. The intent is to allow
 # you to freely use this template for your project and license it as you see
 # fit. The pyaas library is released under the MIT License.
 
@@ -39,6 +39,16 @@ import logging
 
 import pyaas
 import pyaas.storage
+
+class Example(pyaas.server.Application):
+    def __init__(self):
+        # important to use extend if using built-in authentication
+        self.patterns = [
+            ( r'/',       pyaas.handlers.Index     ),
+            ( r'/(main)', pyaas.handlers.Protected ),
+            ]
+
+        pyaas.server.Application.__init__(self)
 
 def example():
     # Set the root for pyaas to this directory
@@ -56,13 +66,7 @@ def example():
     # Optionally load any database backend that is configured
     pyaas.storage.initialize()
 
-    app = pyaas.server.Application()
-
-    # important to extend if using built-in authentication
-    app.patterns.extend([
-        ( r'/', pyaas.handlers.Index )
-    ])
-
+    app = Example()
     try:
         app.Listen()
     except KeyboardInterrupt:

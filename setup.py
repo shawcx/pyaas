@@ -6,17 +6,15 @@ import zipfile
 from distutils.core import setup
 
 zf = zipfile.ZipFile(os.path.join('pyaas', 'skel.zip'), 'w')
-
 for base,directories,filenames in os.walk('skel'):
     for filename in filenames:
         path = os.path.join(base, filename)
         zf.write(path, path[5:])
-
 zf.close()
 
 setup(
     name = 'pyaas',
-    version = '0.2.7',
+    version = '0.2.8',
     author = 'Matthew Oertle',
     author_email = 'moertle@gmail.com',
     url = 'https://github.com/moertle/pyaas',

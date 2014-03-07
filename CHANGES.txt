@@ -1,3 +1,4 @@
+v0.2.8, 03-07-2014 -- More complete skeleton example
 v0.2.7, 03-07-2014 -- More storage engine fixups
 v0.2.6, 03-06-2014 -- Tweaks to support deploy.tk, fixups to the example template
 v0.2.5, 03-04-2014 -- Converted Markdown to RST so that it looks good on PyPi
