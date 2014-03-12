@@ -1,3 +1,4 @@
+v0.2.9, 03-07-2014 -- Mongo support
 v0.2.8, 03-07-2014 -- More complete skeleton example
 v0.2.7, 03-07-2014 -- More storage engine fixups
 v0.2.6, 03-06-2014 -- Tweaks to support deploy.tk, fixups to the example template

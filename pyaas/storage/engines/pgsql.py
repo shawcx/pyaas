@@ -1,4 +1,6 @@
 
+import os
+
 import pyaas
 
 try:
