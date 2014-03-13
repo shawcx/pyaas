@@ -3,6 +3,9 @@ class Database:
     def __init__(self, **kwds):
         pass
 
+    def Initialize(self):
+        return
+
     def Find(self, table, params=None, sort=None):
         return []
 
