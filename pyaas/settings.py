@@ -32,6 +32,12 @@ pyaas.argparser.add_argument('--debug', '-d',
     action='store_true',
     help='Print verbose debugging information')
 
+logging.basicConfig(
+    format  = '%(asctime)s %(levelname)-8s %(message)s',
+    datefmt = '%Y-%m-%d %H:%M:%S',
+    level   = 0
+    )
+
 def load(program=None):
     if program is None:
         program = os.path.basename(sys.argv[0])
@@ -62,8 +68,4 @@ def load(program=None):
 
     # TODO: log to file
 
-    logging.basicConfig(
-        format  = '%(asctime)s %(levelname)-8s %(message)s',
-        datefmt = '%Y-%m-%d %H:%M:%S',
-        level   = 0
-        )
+    #root = logging.getLogger()
