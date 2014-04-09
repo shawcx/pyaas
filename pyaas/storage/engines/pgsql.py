@@ -77,6 +77,21 @@ class Database:
         else:
             self.conn.commit()
 
+    def InsertUnique(self, table, values):
+        columns = ','.join('"%s"' % k.lower() for k in values.keys())
+        placeholder = ','.join('%s' for x in xrange(len(values)))
+        statement = "INSERT INTO {0} ({1}) SELECT {2} WHERE NOT EXISTS (select id from {0} where id = '{3}')" \
+            .format(table, columns, placeholder, values['id'])
+
+        try:
+            self.cursor.execute(statement, values.values())
+        except psycopg2.IntegrityError:
+            self.conn.rollback()
+        except psycopg2.ProgrammingError as e:
+            raise deploy.error('Postgres Programming Error: %s', e)
+        else:
+            self.conn.commit()
+
     def Update(self, table, values):
         _id = values['id']
         columns = ','.join(s + '=?' for s in values.keys())
