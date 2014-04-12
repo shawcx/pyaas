@@ -1,6 +1,6 @@
 
 import json
-import UserDict
+import collections
 
 import pyaas
 
@@ -41,7 +41,7 @@ class Records:
 
 
 
-class Record(object, UserDict.DictMixin):
+class Record(collections.MutableMapping):
     def __init__(self, record):
         try:
             self.id = record['id']
