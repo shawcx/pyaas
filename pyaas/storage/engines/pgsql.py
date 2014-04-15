@@ -88,7 +88,7 @@ class Database:
         except psycopg2.IntegrityError:
             self.conn.rollback()
         except psycopg2.ProgrammingError as e:
-            raise deploy.error('Postgres Programming Error: %s', e)
+            raise pyaas.error('Postgres Programming Error: %s', e)
         else:
             self.conn.commit()
 
