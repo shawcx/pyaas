@@ -76,13 +76,18 @@ class Database:
             raise pyaas.error('Postgres Programming Error: %s', e)
         else:
             self.conn.commit()
+        rows = self.cursor.rowcount
+        if rows is None:
+            rows = -1
+        return rows
+
 
     def InsertUnique(self, table, values):
         columns = ','.join('"%s"' % k.lower() for k in values.keys())
         placeholder = ','.join('%s' for x in xrange(len(values)))
         statement = "INSERT INTO {0} ({1}) SELECT {2} WHERE NOT EXISTS (select id from {0} where id = '{3}')" \
             .format(table, columns, placeholder, values['id'])
-
+        
         try:
             self.cursor.execute(statement, values.values())
         except psycopg2.IntegrityError:
@@ -91,6 +96,10 @@ class Database:
             raise pyaas.error('Postgres Programming Error: %s', e)
         else:
             self.conn.commit()
+        rows = self.cursor.rowcount
+        if rows is None:
+            rows = -1
+        return rows
 
     def Update(self, table, values):
         _id = values['id']
@@ -100,8 +109,12 @@ class Database:
             self.cursor.execute(statement, values.values() + [_id])
         except psycopg2.ProgrammingError:
             raise
-
         self.conn.commit()
+        rows = self.cursor.rowcount
+        if rows is None:
+            rows = -1
+        return rows
+
 
     def Remove(self, table, _id):
         statement = 'DELETE FROM {0} WHERE id = ?'.format(table)
