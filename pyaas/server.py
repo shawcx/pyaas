@@ -104,7 +104,7 @@ class Application(tornado.web.Application):
         tornado.web.Application.__init__(self, self.patterns, **self.settings)
 
         try:
-            self.listen(self.port, self.addr, ssl_options=self.ssl_options)
+            self.listen(self.port, self.addr, xheaders=True, ssl_options=self.ssl_options)
         except socket.gaierror as e:
             if 8 == e.errno:
                 raise pyaas.error('Invalid address specified "%s"' % self.addr)
