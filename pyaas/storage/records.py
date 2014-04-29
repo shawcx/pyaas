@@ -41,7 +41,7 @@ class Records:
 
 
 
-class Record(collections.MutableMapping):
+class Record(object, collections.MutableMapping):
     def __init__(self, record):
         try:
             self.id = record['id']
