@@ -54,7 +54,7 @@ class Database:
         return self.cursor.fetchall()
 
     def FindOne(self, table, _id):
-        statement = 'SELECT * FROM {0} WHERE id = ?'.format(table)
+        statement = 'SELECT * FROM {0} WHERE id = %s'.format(table)
         self.cursor.execute(statement, [_id])
         return self.cursor.fetchone()
 
@@ -103,8 +103,8 @@ class Database:
 
     def Update(self, table, values):
         _id = values['id']
-        columns = ','.join(s + '=?' for s in values.keys())
-        statement = 'UPDATE {0} SET {1} WHERE id=?'.format(table, columns, _id)
+        columns = ','.join(s + '=%s' for s in values.keys())
+        statement = 'UPDATE {0} SET {1} WHERE id=%s'.format(table, columns)
         try:
             self.cursor.execute(statement, values.values() + [_id])
         except psycopg2.ProgrammingError:
@@ -117,6 +117,6 @@ class Database:
 
 
     def Remove(self, table, _id):
-        statement = 'DELETE FROM {0} WHERE id = ?'.format(table)
+        statement = 'DELETE FROM {0} WHERE id = %s'.format(table)
         self.cursor.execute(statement, [_id])
         self.conn.commit()
