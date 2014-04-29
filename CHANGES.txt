@@ -1,3 +1,4 @@
+v0.3.4, 04-29-2014 -- Always quote column names
 v0.3.3, 04-29-2014 -- Fixed update
 v0.3.2, 04-18-2014 -- Integrated stuff
 v0.3.1, 04-09-2014 -- Postgres command for external project

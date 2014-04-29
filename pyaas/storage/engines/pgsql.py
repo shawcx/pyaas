@@ -87,7 +87,7 @@ class Database:
         placeholder = ','.join('%s' for x in xrange(len(values)))
         statement = "INSERT INTO {0} ({1}) SELECT {2} WHERE NOT EXISTS (select id from {0} where id = '{3}')" \
             .format(table, columns, placeholder, values['id'])
-        
+
         try:
             self.cursor.execute(statement, values.values())
         except psycopg2.IntegrityError:
@@ -103,7 +103,7 @@ class Database:
 
     def Update(self, table, values):
         _id = values['id']
-        columns = ','.join(s + '=%s' for s in values.keys())
+        columns = ','.join('"%s"=%%s' % s.lower() for s in values.keys())
         statement = 'UPDATE {0} SET {1} WHERE id=%s'.format(table, columns)
         try:
             self.cursor.execute(statement, values.values() + [_id])
