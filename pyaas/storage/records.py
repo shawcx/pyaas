@@ -96,6 +96,13 @@ class Record(collections.MutableMapping):
                 return self.record[attr]
             raise
 
+
+    def __iter__(self):
+        return self.record.__iter__
+
+    def __len__(self):
+        return len(self.record)
+
 # Dictionary methods to access the data
 
     def __getitem__(self, key):
