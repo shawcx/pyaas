@@ -2,7 +2,7 @@
 import sys
 import os
 
-VERSION = '0.2.8'
+VERSION = '0.3.5'
 
 # a generic error class for throwing exceptions
 class error(Exception):
