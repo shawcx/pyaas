@@ -7,8 +7,10 @@ import tornado.auth
 
 _domains = []
 
+
 def Initialize(domains):
     _domains.extend([d for d in domains.split(' ') if d])
+
 
 class Login(tornado.web.RequestHandler, tornado.auth.GoogleMixin):
     @tornado.web.asynchronous
@@ -23,7 +25,7 @@ class Login(tornado.web.RequestHandler, tornado.auth.GoogleMixin):
             raise tornado.web.HTTPError(500, 'Google authentication failed')
 
         try:
-            name,domain = user['email'].split('@', 1)
+            name, domain = user['email'].split('@', 1)
         except:
             raise tornado.web.HTTPError(500, 'Google authentication failed')
 
@@ -35,9 +37,9 @@ class Login(tornado.web.RequestHandler, tornado.auth.GoogleMixin):
         self.redirect(self.get_argument('next', '/'))
 
     def write_error(self, status_code, **kwargs):
-        request_info = ''.join(["<strong>%s</strong>: %s<br/>" % (k, self.request.__dict__[k] ) for k in self.request.__dict__.keys()])
-        if 'exc_info' not in kwargs:
-            return
+        #''.join("<strong>%s</strong>: %s<br/>" % (k, self.request.__dict__[k]) for k in self.request.__dict__.keys())
+        #if 'exc_info' not in kwargs:
+        #    return
 
         e = kwargs['exc_info'][1]
 

@@ -6,6 +6,7 @@ import pyaas
 
 __all__ = ['Records', 'Record']
 
+
 class Records:
     def __init__(self, records):
         self.records = records
@@ -37,8 +38,7 @@ class Records:
 
     @property
     def json(self):
-        return json.dumps([dict(e) for e in self.records], separators=(',',':'))
-
+        return json.dumps([dict(e) for e in self.records], separators=(',', ':'))
 
 
 class Record(collections.MutableMapping):
@@ -84,7 +84,7 @@ class Record(collections.MutableMapping):
 
     @property
     def json(self):
-        return json.dumps(dict(self.record), separators=(',',':'))
+        return json.dumps(dict(self.record), separators=(',', ':'))
 
 # Direct access of records
 
@@ -95,7 +95,6 @@ class Record(collections.MutableMapping):
             if attr in self.record:
                 return self.record[attr]
             raise
-
 
     def __iter__(self):
         return self.record.__iter__

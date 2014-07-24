@@ -9,6 +9,7 @@ try:
 except ImportError:
     raise pyaas.error('Missing psycopg2 module')
 
+
 class Database:
     def __init__(self, **kwds):
         try:
@@ -40,7 +41,7 @@ class Database:
             raise pyaas.error('Exception: %s', e)
 
     def Find(self, table, params=None, sort=None):
-        statement = 'SELECT * FROM ' + table;
+        statement = 'SELECT * FROM ' + table
         if params:
             statement += ' WHERE ' + params
         if sort:
@@ -81,7 +82,6 @@ class Database:
             rows = -1
         return rows
 
-
     def InsertUnique(self, table, values):
         columns = ','.join('"%s"' % k.lower() for k in values.keys())
         placeholder = ','.join('%s' for x in xrange(len(values)))
@@ -114,7 +114,6 @@ class Database:
         if rows is None:
             rows = -1
         return rows
-
 
     def Remove(self, table, _id):
         statement = 'DELETE FROM {0} WHERE id = %s'.format(table)

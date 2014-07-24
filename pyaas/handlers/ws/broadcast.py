@@ -1,9 +1,9 @@
 
 import socket
-import logging
 
 import tornado.web
 import tornado.websocket
+
 
 class Broadcast(tornado.websocket.WebSocketHandler):
     def initialize(self, sockets):
@@ -27,6 +27,7 @@ class Broadcast(tornado.websocket.WebSocketHandler):
             self.sockets.remove(self)
         except KeyError:
             pass
+
 
 class Protected(Broadcast):
     def open(self):

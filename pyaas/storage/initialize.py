@@ -3,6 +3,7 @@ import logging
 
 import pyaas
 
+
 def initialize(engine=None, section=None):
     if not engine:
         engine = pyaas.args.db or pyaas.config.get('storage', 'engine')
@@ -39,4 +40,3 @@ def initialize(engine=None, section=None):
         pyaas.db.Initialize()
 
     return pyaas.db
-

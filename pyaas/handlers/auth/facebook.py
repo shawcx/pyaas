@@ -1,4 +1,8 @@
 
+import datetime
+
+import pyaas
+
 import tornado.auth
 
 #
@@ -6,6 +10,7 @@ import tornado.auth
 #
 
 FBURL = '%s://%s/login/facebook?next=%s'
+
 
 class Login(tornado.web.RequestHandler, tornado.auth.FacebookGraphMixin):
     @tornado.web.asynchronous
@@ -22,13 +27,13 @@ class Login(tornado.web.RequestHandler, tornado.auth.FacebookGraphMixin):
                 client_secret = pyaas.config.get('facebook', 'secret'),
                 code          = code,
                 callback      = self.async_callback(self._on_auth)
-                )
+            )
         else:
             self.authorize_redirect(
                 redirect_uri = my_url,
                 client_id    = pyaas.config.get('facebook', 'api_key'),
                 extra_params = {'scope': 'email'}
-                )
+            )
 
     def _on_auth(self, fbuser):
         if not fbuser:
@@ -40,7 +45,7 @@ class Login(tornado.web.RequestHandler, tornado.auth.FacebookGraphMixin):
                 '/me',
                 access_token = fbuser['access_token'],
                 callback     = self.async_callback(self._on_me)
-                )
+            )
         else:
             self.set_secure_cookie('uid', str(profile['uid']))
             self.redirect(self.get_argument('next', '/'))

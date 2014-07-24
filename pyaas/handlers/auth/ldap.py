@@ -1,4 +1,6 @@
 
+import logging
+
 import pyaas
 
 import tornado.web
@@ -7,6 +9,7 @@ try:
     import ldap
 except ImportError:
     raise pyaas.error('Missing LDAP module')
+
 
 class Login(tornado.web.RequestHandler):
     def get(self):
@@ -33,7 +36,7 @@ class Login(tornado.web.RequestHandler):
             # do nothing, secure cookie will not be set
             pass
 
-        except ldap.SERVER_DOWN as e:
+        except ldap.SERVER_DOWN:
             logging.warn('Could not connect to LDAP server')
             self.set_secure_cookie('uid', username)
 

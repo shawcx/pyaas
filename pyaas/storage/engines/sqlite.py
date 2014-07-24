@@ -8,6 +8,7 @@ try:
 except ImportError:
     raise pyaas.error('Missing sqlite3 module')
 
+
 class Database:
     def __init__(self, path=None):
         if path is None:
@@ -31,7 +32,7 @@ class Database:
         self.conn.commit()
 
     def Find(self, table, params=None, sort=None):
-        statement = 'SELECT * FROM ' + table;
+        statement = 'SELECT * FROM ' + table
         if params:
             statement += ' WHERE ' + params
         if sort:

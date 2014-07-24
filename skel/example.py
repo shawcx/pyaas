@@ -34,11 +34,11 @@
 # This file can live in the base directory of the project or in a ./bin
 # directory and setPrefix (see below) will resolve accordingly
 
-import os
 import logging
 
 import pyaas
 import pyaas.storage
+
 
 class Example(pyaas.server.Application):
     def __init__(self):
@@ -46,9 +46,10 @@ class Example(pyaas.server.Application):
         self.patterns = [
             ( r'/',       pyaas.handlers.Index     ),
             ( r'/(main)', pyaas.handlers.Protected ),
-            ]
+        ]
 
         pyaas.server.Application.__init__(self)
+
 
 def example():
     # Set the root for pyaas to this directory

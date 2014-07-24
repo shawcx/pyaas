@@ -17,6 +17,7 @@ pyaas.ioloop = tornado.ioloop.IOLoop.instance()
 
 from . import handlers
 
+
 class Application(tornado.web.Application):
     def __init__(self, section='server'):
         # get the interface and port to listen on
@@ -49,7 +50,7 @@ class Application(tornado.web.Application):
             template_path = os.path.join(pyaas.prefix, 'share', pyaas.namespace, 'templates'),
             cookie_secret = cookie_secret,
             debug         = False
-            )
+        )
 
         # useful during development
         if pyaas.args.debug:
@@ -118,4 +119,3 @@ class Application(tornado.web.Application):
 
     def Stop(self):
         pyaas.ioloop.stop()
-

@@ -6,6 +6,7 @@ import logging
 
 import pyaas
 
+
 def generateCookieSecret(path):
     secret = base64.b64encode(os.urandom(32))
     with open(path, 'w') as fp:
@@ -13,6 +14,7 @@ def generateCookieSecret(path):
     return secret
 
 # TODO: add functionality to manage basic authentication
+
 
 def setPrefix(prefix=None):
     if not prefix:
@@ -31,6 +33,7 @@ def setPrefix(prefix=None):
 
     pyaas.prefix = os.path.abspath(prefix)
     logging.debug('Setting prefix to "%s"', pyaas.prefix)
+
 
 def setNameSpace(namespace=None):
     if namespace is None:

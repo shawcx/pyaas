@@ -15,7 +15,7 @@ import pyaas
 pyaas.argparser = argparse.ArgumentParser()
 
 pyaas.argparser.add_argument('--address', '-a',
-    help='Interface to bind to')
+    help = 'Interface to bind to')
 
 pyaas.argparser.add_argument('--port', '-p',
     type=int,
@@ -36,7 +36,8 @@ logging.basicConfig(
     format  = '%(asctime)s %(levelname)-8s %(message)s',
     datefmt = '%Y-%m-%d %H:%M:%S',
     level   = 0
-    )
+)
+
 
 def load(program=None):
     if program is None:
@@ -53,14 +54,14 @@ def load(program=None):
     ini_files = [
         os.path.join(pyaas.prefix, 'etc', pyaas.namespace, program + '.ini'),
         os.path.join(pyaas.prefix, 'etc', pyaas.namespace, program + '.ini.local')
-        ]
+    ]
 
     if pyaas.args.ini:
         ini_files.append(pyaas.args.ini)
 
     try:
         ok = pyaas.config.read(ini_files)
-    except ConfigParser.ParsingError as e:
+    except configparser.ParsingError as e:
         raise pyaas.error('Unable to parse file: %s', e)
 
     if not ok:

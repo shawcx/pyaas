@@ -2,17 +2,16 @@
 
 import sys
 import os
-import shutil
 import argparse
 import zipfile
+
 
 def main():
     argparser = argparse.ArgumentParser()
 
     argparser.add_argument('--name', '-n',
         default='example', required=True,
-        help='Name of the project to create'
-        )
+        help='Name of the project to create')
 
     args = argparser.parse_args()
 
