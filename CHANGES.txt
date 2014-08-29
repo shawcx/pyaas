@@ -1,4 +1,4 @@
-v0.3.5, 08-13-2014 -- Added CoffeeScript and LESS to skeleton project
+v0.3.6, 08-13-2014 -- Added CoffeeScript and LESS to skeleton project
 v0.3.5, 05-05-2014 -- Define the abstract interface for the record class
 v0.3.4, 04-29-2014 -- Always quote column names
 v0.3.3, 04-29-2014 -- Fixed update
