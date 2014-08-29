@@ -34,9 +34,10 @@ def main():
 
     os.chdir(dstdir)
 
-    for src in ['example.py', os.path.join('etc', 'example.ini')]:
+    for src in ['bin/example.py', os.path.join('etc', 'example.ini')]:
         dst = src.replace('example', args.name)
         os.rename(src, dst)
+
 
 if '__main__' == __name__:
     main()

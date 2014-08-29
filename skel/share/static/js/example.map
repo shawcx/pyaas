@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "example.js",
+  "sourceRoot": "../../..",
+  "sources": [
+    "src/example.litcoffee"
+  ],
+  "names": [],
+  "mappings": ";AACI;AAAA,EAAA,CAAA,CAAE,QAAF,CAAW,CAAC,KAAZ,CAAkB,SAAA,GAAA;WACd,OAAO,CAAC,GAAR,CAAY,OAAZ,EADc;EAAA,CAAlB,CAAA,CAAA;;;IAKA,MAAM,CAAC,cAAe,SAAC,KAAD,GAAA;AAClB,MAAA,KAAK,CAAC,cAAN,CAAA,CAAA,CAAA;AAAA,MACA,KAAK,CAAC,eAAN,CAAA,CADA,CAAA;AAEA,aAAO,KAAP,CAHkB;IAAA;GALtB;AAAA"
+}
