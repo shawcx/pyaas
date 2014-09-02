@@ -9,7 +9,7 @@ except ImportError:
     import ConfigParser as configparser
 
 import pyaas
-import pyaas.handler
+import pyaas.handlers
 
 import tornado.web
 import tornado.ioloop
