@@ -14,7 +14,7 @@ zf.close()
 
 setup(
     name='pyaas',
-    version='0.3.8',
+    version='0.3.9',
     author='Matthew Oertle',
     author_email='moertle@gmail.com',
     url='https://github.com/moertle/pyaas',
@@ -33,7 +33,7 @@ setup(
         'pyaas': ['skel.zip']
     },
     install_requires=[
-        "tornado >= 3.0",
+        "tornado >= 4.0.1",
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",
