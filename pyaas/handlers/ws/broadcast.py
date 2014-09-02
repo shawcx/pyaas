@@ -1,6 +1,4 @@
 
-import socket
-
 import tornado.web
 import tornado.websocket
 
@@ -10,7 +8,8 @@ class Broadcast(tornado.websocket.WebSocketHandler):
         self.sockets = sockets
 
     def open(self):
-        self.stream.socket.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)
+        self.stream.set_nodelay(True)
+
         self.sockets.add(self)
 
     def on_message(self, msg):

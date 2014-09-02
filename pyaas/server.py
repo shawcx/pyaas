@@ -9,17 +9,18 @@ except ImportError:
     import ConfigParser as configparser
 
 import pyaas
+import pyaas.handler
 
 import tornado.web
 import tornado.ioloop
 
 pyaas.ioloop = tornado.ioloop.IOLoop.instance()
 
-from . import handlers
-
 
 class Application(tornado.web.Application):
     def __init__(self, section='server'):
+        self.websockets = set()
+
         # get the interface and port to listen on
         self.addr = pyaas.args.address or pyaas.config.get(section, 'address')
         self.port = pyaas.args.port or pyaas.config.getint(section, 'port')
@@ -96,7 +97,7 @@ class Application(tornado.web.Application):
             self.patterns.extend([
                 ( r'/login',  Login                      ),
                 ( r'/logout', pyaas.handlers.auth.Logout ),
-                ])
+            ])
 
             self.settings['login_url'] = '/login'
 
@@ -116,6 +117,12 @@ class Application(tornado.web.Application):
         logging.info('Listening on %s:%d', self.addr, self.port)
 
         pyaas.ioloop.start()
+
+    def Broadcast(self, msg):
+        'Broadcast a message to all connected sockets'
+
+        for client in self.websockets:
+            client.write_message(msg)
 
     def Stop(self):
         pyaas.ioloop.stop()
