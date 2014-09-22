@@ -20,7 +20,7 @@ class Login(tornado.web.RequestHandler):
     def post(self):
         username = self.get_argument('username', 'admin')
         password = self.get_argument('password', '')
-        password = '{SHA}' + base64.b64encode(hashlib.sha1(password).digest()) + '\n'
+        password = '{SHA}' + base64.b64encode(hashlib.sha1(password).digest())
 
         path = os.path.join(pyaas.prefix, pyaas.config.get('basic', 'path'))
         fp = open(path, 'r')
