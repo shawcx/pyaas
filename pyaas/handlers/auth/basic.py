@@ -32,7 +32,7 @@ class Login(tornado.web.RequestHandler):
             if entry != username:
                 continue
 
-            if hash != password:
+            if hash.rstrip() != password:
                 break
                 #raise tornado.web.HTTPError(403)
 
