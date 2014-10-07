@@ -26,7 +26,7 @@ class Login(tornado.web.RequestHandler, tornado.auth.FacebookGraphMixin):
                 client_id     = pyaas.config.get('facebook', 'api_key'),
                 client_secret = pyaas.config.get('facebook', 'secret'),
                 code          = code,
-                callback      = self.async_callback(self._on_auth)
+                callback      = self._on_auth
             )
         else:
             self.authorize_redirect(
@@ -44,7 +44,7 @@ class Login(tornado.web.RequestHandler, tornado.auth.FacebookGraphMixin):
             self.facebook_request(
                 '/me',
                 access_token = fbuser['access_token'],
-                callback     = self.async_callback(self._on_me)
+                callback     = self._on_me
             )
         else:
             self.set_secure_cookie('uid', str(profile['uid']))
