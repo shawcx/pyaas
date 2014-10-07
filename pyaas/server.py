@@ -66,8 +66,12 @@ class Application(tornado.web.Application):
         if auth:
             logging.debug('Enabling authentication: %s', auth)
 
-            # all auth mechanisms need to be in this path
-            path = 'pyaas.handlers.auth.' + auth
+            if '.' in auth:
+                logging.debug('Assuming auth is a fully qualified name')
+                path = auth
+            else:
+                # all auth mechanisms need to be in this path
+                path = 'pyaas.handlers.auth.' + auth
             try:
                 module = __import__(path)
             except ImportError:
@@ -80,12 +84,12 @@ class Application(tornado.web.Application):
             try:
                 Initialize = getattr(module, 'Initialize')
                 logging.debug('Initializing authentication: %s', auth)
-                Initialize(**dict(pyaas.config.items(auth, True)))
+                Initialize(**dict(pyaas.config.items(path.split('.')[-1], True)))
             except AttributeError:
                 # no intialization needed
                 pass
             except configparser.NoSectionError:
-                raise pyaas.error('Missing configurationf for %s', auth)
+                raise pyaas.error('Missing configuration for %s', auth)
 
             # get the Login class from the module
             try:
