@@ -22,23 +22,21 @@ class Database:
     def Initialize(self):
         schema = os.path.join(pyaas.prefix, pyaas.config.get('storage', 'schema'))
         schema = open(schema, 'rb').read()
-        self.cursor.execute(schema)
-        self.conn.commit()
+
+        with self.conn as conn:
+            self.cursor.execute(schema)
+            conn.commit()
 
     def Execute(self, statement, *args):
-        try:
+        with self.conn as conn:
             self.cursor.execute(statement, args)
-        except Exception as e:
-            raise pyaas.error('Exception: %s', e)
-
+            conn.commit()
         return self.cursor.fetchall()
 
     def Execute2(self, statement, *args):
-        try:
+        with self.conn as conn:
             self.cursor.execute(statement, args)
-            self.conn.commit()
-        except Exception as e:
-            raise pyaas.error('Exception: %s', e)
+            conn.commit()
 
     def Find(self, table, params=None, sort=None):
         statement = 'SELECT * FROM ' + table
@@ -47,21 +45,24 @@ class Database:
         if sort:
             statement += ''
 
-        try:
+        with self.conn as conn:
             self.cursor.execute(statement)
-        except psycopg2.ProgrammingError as e:
-            raise pyaas.error('Error in statement: %s', e)
+            conn.commit()
 
         return self.cursor.fetchall()
 
     def FindOne(self, table, _id):
         statement = 'SELECT * FROM {0} WHERE id = %s'.format(table)
-        self.cursor.execute(statement, [_id])
+        with self.conn as conn:
+            self.cursor.execute(statement, [_id])
+            conn.commit()
         return self.cursor.fetchone()
 
     def Count(self, table):
         statement = 'SELECT count(*) FROM {0}'.format(table)
-        self.cursor.execute(statement)
+        with self.conn as conn:
+            self.cursor.execute(statement)
+            conn.commit()
         return self.cursor.fetchone()[0]
 
     def Insert(self, table, values):
@@ -69,14 +70,10 @@ class Database:
         placeholder = ','.join('%s' for x in xrange(len(values)))
         statement = 'INSERT INTO {0} ({1}) VALUES ({2})'.format(table, columns, placeholder)
 
-        try:
+        with self.conn as conn:
             self.cursor.execute(statement, values.values())
-        except psycopg2.IntegrityError:
-            self.conn.rollback()
-        except psycopg2.ProgrammingError as e:
-            raise pyaas.error('Postgres Programming Error: %s', e)
-        else:
-            self.conn.commit()
+            conn.commit()
+
         rows = self.cursor.rowcount
         if rows is None:
             rows = -1
@@ -88,14 +85,10 @@ class Database:
         statement = "INSERT INTO {0} ({1}) SELECT {2} WHERE NOT EXISTS (select id from {0} where id = '{3}')" \
             .format(table, columns, placeholder, values['id'])
 
-        try:
+        with self.conn as conn:
             self.cursor.execute(statement, values.values())
-        except psycopg2.IntegrityError:
-            self.conn.rollback()
-        except psycopg2.ProgrammingError as e:
-            raise pyaas.error('Postgres Programming Error: %s', e)
-        else:
-            self.conn.commit()
+            conn.commit()
+
         rows = self.cursor.rowcount
         if rows is None:
             rows = -1
@@ -105,11 +98,11 @@ class Database:
         _id = values['id']
         columns = ','.join('"%s"=%%s' % s.lower() for s in values.keys())
         statement = 'UPDATE {0} SET {1} WHERE id=%s'.format(table, columns)
-        try:
+
+        with self.conn as conn:
             self.cursor.execute(statement, values.values() + [_id])
-        except psycopg2.ProgrammingError:
-            raise
-        self.conn.commit()
+            conn.commit()
+
         rows = self.cursor.rowcount
         if rows is None:
             rows = -1
@@ -117,5 +110,6 @@ class Database:
 
     def Remove(self, table, _id):
         statement = 'DELETE FROM {0} WHERE id = %s'.format(table)
-        self.cursor.execute(statement, [_id])
-        self.conn.commit()
+        with self.conn as conn:
+            self.cursor.execute(statement, [_id])
+            conn.commit()
