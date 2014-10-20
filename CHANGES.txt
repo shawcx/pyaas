@@ -1,3 +1,4 @@
+v0.3.12, 10-19-2014 -- Transaction rollback
 v0.3.11, 10-01-2014 -- Basic auth bug
 v0.3.10, 09-22-2014 -- Basic auth bug
 v0.3.9, 09-02-2014 -- More complete skeleton
