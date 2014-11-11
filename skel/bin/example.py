@@ -32,42 +32,33 @@
 # -----------------------------------------------------------------------------
 
 # This file can live in the base directory of the project or in a ./bin
-# directory and setPrefix (see below) will resolve accordingly
+# directory and init() (see below) will resolve accordingly
+
+# This bit just ensures that this file isn't on the module search path
+import inspect, os, sys
+localpath = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+sys.path = filter(lambda path: path != localpath, sys.path)
 
 import logging
 
 import pyaas
-import pyaas.storage
+import example
+import example.app
 
-
-class Example(pyaas.server.Application):
-    def __init__(self):
-        # important to use extend if using built-in authentication
-        self.patterns = [
-            ( r'/',       pyaas.handlers.Index     ),
-            ( r'/(main)', pyaas.handlers.Protected ),
-        ]
-
-        pyaas.server.Application.__init__(self)
-
-
-def example():
+def runExampleApp():
     # Set the root for pyaas to this directory
     # If a path is not passed then pyaas will derive the path
-    pyaas.util.setPrefix()
-
+    #
     # Set the namespace for the project,
     # e.g. etc/example.ini vs etc/example/example.ini
     # -or- share/static/favicon.ico vs share/example/static/favicon.ico
-    #pyaas.util.setNameSpace('example')
+    #
+    # Calling init() without args is equivalent to:
+    # pyaas.init(prefix='/full/path/to/example', namespace='example', settings='example')
 
-    # Load settings from the command line and ini files
-    pyaas.settings.load()
+    pyaas.init()
 
-    # Optionally load any database backend that is configured
-    pyaas.storage.initialize()
-
-    app = Example()
+    app = example.app.ExampleApp()
     try:
         app.Listen()
     except KeyboardInterrupt:
@@ -75,6 +66,6 @@ def example():
 
 if '__main__' == __name__:
     try:
-        example()
+        runExampleApp()
     except pyaas.error as e:
-        logging.critical('%s', e)
+        logging.exception('%s', e)

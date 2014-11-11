@@ -13,7 +13,7 @@ class Records:
 
     @classmethod
     def Read(cls, params=None, sort=None):
-        return cls(pyaas.db.Find(cls.RECORD.__name__, params, sort))
+        return cls(pyaas.db.Find(cls.RECORD.table(), params, sort))
 
     def Delete(self):
         for record in self.records:
@@ -22,7 +22,7 @@ class Records:
 
     @classmethod
     def Count(cls):
-        return pyaas.db.Count(cls.RECORD.__name__)
+        return pyaas.db.Count(cls.RECORD.table())
 
 # List methods to iterate over the collection
 
@@ -42,9 +42,12 @@ class Records:
 
 
 class Record(collections.MutableMapping):
+    TABLE_NAME = None
+    ID_COLUMN = 'id'
+
     def __init__(self, record):
         try:
-            self.id = record['id']
+            self.id = record[self.ID_COLUMN]
         except KeyError:
             self.id = None
         self.record = dict(record)
@@ -53,6 +56,12 @@ class Record(collections.MutableMapping):
     def Init(self):
         pass
 
+    @classmethod
+    def table(cls):
+        if cls.TABLE_NAME is None:
+            cls.TABLE_NAME = cls.__name__
+        return cls.TABLE_NAME
+
 # CRUD methods
 
     @classmethod
@@ -60,24 +69,24 @@ class Record(collections.MutableMapping):
         return cls(values).Insert()
 
     def Insert(self):
-        pyaas.db.Insert(self.__class__.__name__, self.record)
+        pyaas.db.Insert(self.table(), self.record)
         if self.id is None:
-            self.id = self.record['id']
+            self.id = self.record[self.ID_COLUMN]
         return self
 
     @classmethod
     def Read(cls, _id):
-        record = pyaas.db.FindOne(cls.__name__, _id)
+        record = pyaas.db.FindOne(cls.table(), _id, cls.ID_COLUMN)
         return cls(record) if record else None
 
     def Update(self, values=None):
         if values:
             self.record.update(values)
-        pyaas.db.Update(self.__class__.__name__, self.record)
+        pyaas.db.Update(self.table(), self.record, self.ID_COLUMN)
         return self
 
     def Delete(self):
-        pyaas.db.Remove(self.__class__.__name__, self.id)
+        pyaas.db.Remove(self.table(), self.id, self.ID_COLUMN)
         return True
 
 # Convenience function to access data as JSON

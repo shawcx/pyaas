@@ -1,6 +1,5 @@
 
-VERSION = '0.3.12'
-
+VERSION = '0.4.0'
 
 # a generic error class for throwing exceptions
 class error(Exception):
@@ -14,6 +13,11 @@ class error(Exception):
 from . import settings
 from . import util
 from . import server
+from . import module
+from .util import init
 
-util.setPrefix()
-util.setNameSpace('')
+prefix      = None
+namespace   = None
+paths       = None
+db          = None
+cache       = None

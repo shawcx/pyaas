@@ -4,6 +4,36 @@ import sys
 import os
 import argparse
 import zipfile
+import shutil
+import time
+
+
+def replace_in_file(src, dst, **kwargs):
+    with open(src) as r:
+        with open(dst, 'w') as w:
+            for line in r:
+                w.write(replace_in_str(line, **kwargs))
+
+def replace_in_str(str, **kwargs):
+    for key, value in kwargs.iteritems():
+        str = str.replace(key, value)
+    return str
+
+def replace_all(file, **kwargs):
+    dst = replace_in_str(file, **kwargs)
+    if os.path.isdir(file):
+        if file != dst:
+            shutil.move(file, dst)
+            file = dst
+        for f in os.listdir(file):
+            replace_all(os.path.join(file, f), **kwargs)
+    else:
+        if file == dst:
+            tmp = '%s.tmp.%d' % (file, time.time())
+            shutil.move(file, tmp)
+            file = tmp
+        replace_in_file(file, dst, **kwargs)
+        os.remove(file)
 
 
 def main():
@@ -15,7 +45,10 @@ def main():
 
     args = argparser.parse_args()
 
-    dstdir = os.path.join(os.getcwd(), os.path.basename(args.name))
+    parts = args.name.split(' ')
+    camel_name = ''.join([(p[0].upper() + p[1:]) for p in parts])
+    lower_name = ''.join(parts)
+    dstdir = os.path.join(os.getcwd(), os.path.basename(lower_name))
     dstdir = os.path.abspath(dstdir)
 
     try:
@@ -34,9 +67,7 @@ def main():
 
     os.chdir(dstdir)
 
-    for src in ['bin/example.py', os.path.join('etc', 'example.ini')]:
-        dst = src.replace('example', args.name)
-        os.rename(src, dst)
+    replace_all(dstdir, example=lower_name, Example=camel_name)
 
 
 if '__main__' == __name__:

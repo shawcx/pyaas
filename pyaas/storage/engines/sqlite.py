@@ -10,7 +10,7 @@ except ImportError:
 
 
 class Database:
-    def __init__(self, path=None):
+    def __init__(self, path=None, schema=None):
         if path is None:
             path = ':memory:'
         else:
@@ -24,12 +24,15 @@ class Database:
 
         self.conn.row_factory = sqlite3.Row
         self.cursor = self.conn.cursor()
+        self.schema = schema
 
     def Initialize(self):
-        schema = os.path.join(pyaas.prefix, pyaas.config.get('storage', 'schema'))
-        schema = open(schema, 'rb').read()
-        self.cursor.executescript(schema)
-        self.conn.commit()
+        if self.schema:
+            schema = os.path.join(pyaas.prefix, self.schema)
+            if schema and os.path.isfile(schema):
+                schema = open(schema, 'rb').read()
+                self.cursor.executescript(schema)
+                self.conn.commit()
 
     def Find(self, table, params=None, sort=None):
         statement = 'SELECT * FROM ' + table

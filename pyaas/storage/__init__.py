@@ -1,5 +1,4 @@
 
-from .initialize import initialize
 from .records    import *
 
 import pyaas

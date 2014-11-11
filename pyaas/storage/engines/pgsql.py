@@ -2,6 +2,7 @@
 import os
 
 import pyaas
+import pyaas.storage.cache
 
 try:
     import psycopg2
@@ -18,14 +19,18 @@ class Database:
             raise pyaas.error('Could not connect to database: %s', e)
 
         self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        self.schema = kwds.get('schema', None)
 
     def Initialize(self):
-        schema = os.path.join(pyaas.prefix, pyaas.config.get('storage', 'schema'))
-        schema = open(schema, 'rb').read()
+        if self.schema:
+            schema = os.path.join(pyaas.prefix, self.schema)
+            if schema and os.path.isfile(schema):
+                with open(schema, 'rb') as f:
+                    schema = f.read()
+                    with self.conn as conn:
+                        self.cursor.execute(schema)
+                        conn.commit()
 
-        with self.conn as conn:
-            self.cursor.execute(schema)
-            conn.commit()
 
     def Execute(self, statement, *args):
         with self.conn as conn:
@@ -51,8 +56,8 @@ class Database:
 
         return self.cursor.fetchall()
 
-    def FindOne(self, table, _id):
-        statement = 'SELECT * FROM {0} WHERE id = %s'.format(table)
+    def FindOne(self, table, _id, id_column='id'):
+        statement = 'SELECT * FROM {0} WHERE {1} = %s'.format(table, id_column)
         with self.conn as conn:
             self.cursor.execute(statement, [_id])
             conn.commit()
@@ -79,11 +84,17 @@ class Database:
             rows = -1
         return rows
 
-    def InsertUnique(self, table, values):
+    def Upsert(self, table, values, id_column='id'):
+        rows = self.InsertUnique(table, values, id_column)
+        if rows <= 0:
+            rows = self.Update(table, values, id_column)
+        return rows
+
+    def InsertUnique(self, table, values, id_column='id'):
         columns = ','.join('"%s"' % k.lower() for k in values.keys())
         placeholder = ','.join('%s' for x in xrange(len(values)))
-        statement = "INSERT INTO {0} ({1}) SELECT {2} WHERE NOT EXISTS (select id from {0} where id = '{3}')" \
-            .format(table, columns, placeholder, values['id'])
+        statement = "INSERT INTO {0} ({1}) SELECT {2} WHERE NOT EXISTS (select {4} from {0} where {4} = '{3}')" \
+            .format(table, columns, placeholder, values[id_column], id_column)
 
         with self.conn as conn:
             self.cursor.execute(statement, values.values())
@@ -94,10 +105,10 @@ class Database:
             rows = -1
         return rows
 
-    def Update(self, table, values):
-        _id = values['id']
+    def Update(self, table, values, id_column='id'):
+        _id = values[id_column]
         columns = ','.join('"%s"=%%s' % s.lower() for s in values.keys())
-        statement = 'UPDATE {0} SET {1} WHERE id=%s'.format(table, columns)
+        statement = 'UPDATE {0} SET {1} WHERE {2}=%s'.format(table, columns, id_column)
 
         with self.conn as conn:
             self.cursor.execute(statement, values.values() + [_id])
@@ -108,8 +119,8 @@ class Database:
             rows = -1
         return rows
 
-    def Remove(self, table, _id):
-        statement = 'DELETE FROM {0} WHERE id = %s'.format(table)
+    def Remove(self, table, _id, id_column='id'):
+        statement = 'DELETE FROM {0} WHERE {1} = %s'.format(table, id_column)
         with self.conn as conn:
             self.cursor.execute(statement, [_id])
             conn.commit()

@@ -14,7 +14,7 @@ zf.close()
 
 setup(
     name='pyaas',
-    version='0.3.12',
+    version='0.4.0',
     author='Matthew Oertle',
     author_email='moertle@gmail.com',
     url='https://github.com/moertle/pyaas',
@@ -28,6 +28,7 @@ setup(
         'pyaas.handlers.ws',
         'pyaas.storage',
         'pyaas.storage.engines',
+        'pyaas.storage.cache',
     ],
     package_data={
         'pyaas': ['skel.zip']

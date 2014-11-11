@@ -6,6 +6,11 @@ import logging
 
 import pyaas
 
+class Paths(object):
+    def __init__(self):
+        self.etc = None
+        self.static = None
+        self.templates = None
 
 def generateCookieSecret(path):
     secret = base64.b64encode(os.urandom(32))
@@ -13,15 +18,13 @@ def generateCookieSecret(path):
         fp.write(secret)
     return secret
 
-# TODO: add functionality to manage basic authentication
-
 
 def setPrefix(prefix=None):
     if not prefix:
         # inspect who called this function
         frames = inspect.getouterframes(inspect.currentframe())
         # get the caller frame
-        frame = frames[1]
+        frame = frames[-1]
         # get the filename of the caller
         prefix = os.path.abspath(frame[1])
         # get the directory name of the file
@@ -31,8 +34,10 @@ def setPrefix(prefix=None):
             prefix = os.path.join(prefix, '..')
             prefix = os.path.abspath(prefix)
 
-    pyaas.prefix = os.path.abspath(prefix)
-    logging.debug('Setting prefix to "%s"', pyaas.prefix)
+    prefix = os.path.abspath(prefix)
+    if pyaas.prefix != prefix:
+        pyaas.prefix = prefix
+        logging.debug('Setting prefix to "%s"', pyaas.prefix)
 
 
 def setNameSpace(namespace=None):
@@ -40,8 +45,36 @@ def setNameSpace(namespace=None):
         # inspect who called this function
         frames = inspect.getouterframes(inspect.currentframe())
         # get the caller frame
-        frame = frames[1]
-        namespace = frame[0].f_code.co_name
-        logging.debug('Setting namespace to "%s"', namespace)
+        frame = frames[-1]
+        namespace = os.path.basename(frame[1]).split('.')[0]
 
-    pyaas.namespace = namespace
+    if namespace != pyaas.namespace:
+        pyaas.namespace = namespace
+        logging.debug('Setting namespace to "%s"', pyaas.namespace)
+
+
+def init(prefix=None, namespace=None, settings=None):
+    """
+    Call this guy to init pyaas stuffs
+    :param prefix: The root path of the app
+    :param namespace: The namespace
+    :return: None
+    """
+
+    # Set my prefix
+    setPrefix(prefix)
+    # Set my namespace
+    setNameSpace(namespace)
+
+    # Set other fun things based on these
+    pyaas.paths = Paths()
+    pyaas.paths.etc = os.path.join(pyaas.prefix, 'etc', pyaas.namespace)
+    pyaas.paths.static = os.path.join(pyaas.prefix, 'share', pyaas.namespace, 'static')
+    pyaas.paths.templates = os.path.join(pyaas.prefix, 'share', pyaas.namespace, 'templates')
+
+    # Init settings
+    pyaas.settings.load(settings)
+
+    # Init global modules
+    pyaas.module.Cache().load()
+    pyaas.module.Storage().load()

@@ -8,11 +8,12 @@ import tornado.auth
 _domains = []
 
 
-def Initialize(domains):
-    _domains.extend([d for d in domains.split(' ') if d])
-
-
 class Login(tornado.web.RequestHandler, tornado.auth.GoogleMixin):
+
+    @classmethod
+    def initialize(cls, *args, **kwargs):
+        _domains.extend([d for d in kwargs.get('domains', '').split(' ') if d])
+
     @tornado.web.asynchronous
     def get(self):
         if self.get_argument('openid.mode', None):

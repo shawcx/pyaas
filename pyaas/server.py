@@ -26,7 +26,7 @@ class Application(tornado.web.Application):
         self.port = pyaas.args.port or pyaas.config.getint(section, 'port')
 
         # load the cookie secret used to encrypt cookies
-        cookie_path = os.path.join(pyaas.prefix, 'etc', pyaas.namespace, 'cookie.secret')
+        cookie_path = os.path.join(pyaas.paths.etc, 'cookie.secret')
 
         if pyaas.args.newcookie:
             cookie_secret = pyaas.util.generateCookieSecret(cookie_path)
@@ -47,8 +47,8 @@ class Application(tornado.web.Application):
 
         # Tornado settings
         self.settings = dict(
-            static_path   = os.path.join(pyaas.prefix, 'share', pyaas.namespace, 'static'),
-            template_path = os.path.join(pyaas.prefix, 'share', pyaas.namespace, 'templates'),
+            static_path   = pyaas.paths.static,
+            template_path = pyaas.paths.templates,
             cookie_secret = cookie_secret,
             debug         = False
         )
@@ -57,53 +57,8 @@ class Application(tornado.web.Application):
         if pyaas.args.debug:
             self.settings['debug'] = True
 
-        # get the auth mechanism if any
-        try:
-            auth = pyaas.config.get(section, 'auth')
-        except:
-            auth = None
+        pyaas.module.Auth().load(self)
 
-        if auth:
-            logging.debug('Enabling authentication: %s', auth)
-
-            if '.' in auth:
-                logging.debug('Assuming auth is a fully qualified name')
-                path = auth
-            else:
-                # all auth mechanisms need to be in this path
-                path = 'pyaas.handlers.auth.' + auth
-            try:
-                module = __import__(path)
-            except ImportError:
-                raise pyaas.error('Unknown auth method: %s', auth)
-
-            # drill done to the actual module
-            for name in path.split('.')[1:]:
-                module = getattr(module, name)
-
-            try:
-                Initialize = getattr(module, 'Initialize')
-                logging.debug('Initializing authentication: %s', auth)
-                Initialize(**dict(pyaas.config.items(path.split('.')[-1], True)))
-            except AttributeError:
-                # no intialization needed
-                pass
-            except configparser.NoSectionError:
-                raise pyaas.error('Missing configuration for %s', auth)
-
-            # get the Login class from the module
-            try:
-                Login = getattr(module, 'Login')
-            except AttributeError:
-                raise pyaas.error('Auth module is missing Login class')
-
-            # extend the patterns and settings accordingly
-            self.patterns.extend([
-                ( r'/login',  Login                      ),
-                ( r'/logout', pyaas.handlers.auth.Logout ),
-            ])
-
-            self.settings['login_url'] = '/login'
 
     def Listen(self):
         # initialize here so patterns and settings can be extended by plugins
@@ -130,3 +85,5 @@ class Application(tornado.web.Application):
 
     def Stop(self):
         pyaas.ioloop.stop()
+
+
