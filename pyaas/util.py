@@ -53,11 +53,12 @@ def setNameSpace(namespace=None):
         logging.debug('Setting namespace to "%s"', pyaas.namespace)
 
 
-def init(prefix=None, namespace=None, settings=None):
+def init(prefix='', namespace='', settings=None):
     """
     Call this guy to init pyaas stuffs
     :param prefix: The root path of the app
     :param namespace: The namespace
+    :param settings: Alternative name of ini file to load
     :return: None
     """
 
