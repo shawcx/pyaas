@@ -34,6 +34,9 @@ class Database:
                 self.cursor.executescript(schema)
                 self.conn.commit()
 
+    def Sync(self):
+        self.conn.commit()
+
     def Find(self, table, params=None, sort=None):
         statement = 'SELECT * FROM ' + table
         if params:
@@ -54,7 +57,7 @@ class Database:
         self.cursor.execute(statement)
         return self.cursor.fetchone()[0]
 
-    def Insert(self, table, values, key='id'):
+    def Insert(self, table, values, id_column='id'):
         columns = ','.join(values.keys())
         placeholder = ','.join('?' * len(values))
         statement = 'INSERT INTO {0} ({1}) VALUES ({2})'.format(table, columns, placeholder)
@@ -64,13 +67,13 @@ class Database:
         except sqlite3.ProgrammingError:
             raise pyaas.error('Problem executing statement')
 
-        if key not in values:
+        if id_column not in values:
             values[key] = self.cursor.lastrowid
 
-        self.conn.commit()
+        #self.conn.commit()
 
-    def Update(self, table, values, key='id'):
-        _id = values[key]
+    def Update(self, table, values, id_column='id'):
+        _id = values[id_column]
         columns = ','.join(s + '=?' for s in values.keys())
         statement = 'UPDATE {0} SET {1} WHERE id=?'.format(table, columns, _id)
         try:
@@ -78,9 +81,9 @@ class Database:
         except sqlite3.ProgrammingError:
             raise pyaas.error('Problem executing statement')
 
-        self.conn.commit()
+        #self.conn.commit()
 
     def Remove(self, table, _id):
         statement = 'DELETE FROM {0} WHERE id = ?'.format(table)
         self.cursor.execute(statement, [_id])
-        self.conn.commit()
+        #self.conn.commit()

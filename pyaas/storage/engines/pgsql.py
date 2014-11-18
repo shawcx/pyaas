@@ -13,13 +13,16 @@ except ImportError:
 
 class Database:
     def __init__(self, **kwds):
+        self.schema = kwds.get('schema', None)
+        if self.schema is not None:
+            del kwds['schema']
+
         try:
             self.conn = psycopg2.connect(**kwds)
         except psycopg2.OperationalError as e:
             raise pyaas.error('Could not connect to database: %s', e)
 
         self.cursor = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        self.schema = kwds.get('schema', None)
 
     def Initialize(self):
         if self.schema:
@@ -31,6 +34,8 @@ class Database:
                         self.cursor.execute(schema)
                         conn.commit()
 
+    def Sync(self):
+        pass
 
     def Execute(self, statement, *args):
         with self.conn as conn:
@@ -70,7 +75,7 @@ class Database:
             conn.commit()
         return self.cursor.fetchone()[0]
 
-    def Insert(self, table, values):
+    def Insert(self, table, values, id_column='id'):
         columns = ','.join('"%s"' % k.lower() for k in values.keys())
         placeholder = ','.join('%s' for x in xrange(len(values)))
         statement = 'INSERT INTO {0} ({1}) VALUES ({2})'.format(table, columns, placeholder)
@@ -82,6 +87,11 @@ class Database:
         rows = self.cursor.rowcount
         if rows is None:
             rows = -1
+
+        if id_column not in values:
+            self.cursor.execute('SELECT lastval()')
+            values[id_column] = self.cursor.fetchone()[0]
+
         return rows
 
     def Upsert(self, table, values, id_column='id'):

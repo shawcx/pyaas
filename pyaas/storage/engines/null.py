@@ -6,6 +6,9 @@ class Database:
     def Initialize(self):
         return
 
+    def Sync(self):
+        return
+
     def Find(self, table, params=None, sort=None):
         return []
 

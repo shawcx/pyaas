@@ -38,6 +38,9 @@ class Database:
     def Initialize(self):
         return
 
+    def Sync(self):
+        return
+
     def Reset(self):
         pyaas.mongo.drop_database(self.dbname)
         pyaas.mongo.drop_database(self.store)
