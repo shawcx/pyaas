@@ -58,9 +58,7 @@ class Record(collections.MutableMapping):
 
     @classmethod
     def table(cls):
-        if cls.TABLE_NAME is None:
-            cls.TABLE_NAME = cls.__name__
-        return cls.TABLE_NAME
+        return cls.__name__ if cls.TABLE_NAME is None else cls.TABLE_NAME
 
 # CRUD methods
 

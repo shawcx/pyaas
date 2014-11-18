@@ -54,7 +54,7 @@ class Database:
         self.cursor.execute(statement)
         return self.cursor.fetchone()[0]
 
-    def Insert(self, table, values):
+    def Insert(self, table, values, key='id'):
         columns = ','.join(values.keys())
         placeholder = ','.join('?' * len(values))
         statement = 'INSERT INTO {0} ({1}) VALUES ({2})'.format(table, columns, placeholder)
@@ -64,13 +64,13 @@ class Database:
         except sqlite3.ProgrammingError:
             raise pyaas.error('Problem executing statement')
 
-        if 'id' not in values:
-            values['id'] = self.cursor.lastrowid
+        if key not in values:
+            values[key] = self.cursor.lastrowid
 
         self.conn.commit()
 
-    def Update(self, table, values):
-        _id = values['id']
+    def Update(self, table, values, key='id'):
+        _id = values[key]
         columns = ','.join(s + '=?' for s in values.keys())
         statement = 'UPDATE {0} SET {1} WHERE id=?'.format(table, columns, _id)
         try:
