@@ -1,3 +1,4 @@
+v0.4.2, 11-18-2014 -- Storage engine updates
 v0.4.1, 11-15-2014 -- Fixed namespace bug
 v0.4.0, 11-11-2014 -- Lots of new stuff
 v0.3.12, 10-19-2014 -- Transaction rollback
