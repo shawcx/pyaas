@@ -47,8 +47,8 @@ class Database:
         self.cursor.execute(statement)
         return self.cursor.fetchall()
 
-    def FindOne(self, table, _id):
-        statement = 'SELECT * FROM {0} WHERE id = ?'.format(table)
+    def FindOne(self, table, _id, id_column='id'):
+        statement = 'SELECT * FROM {0} WHERE {1} = ?'.format(table, id_column)
         self.cursor.execute(statement, [_id])
         return self.cursor.fetchone()
 
@@ -83,7 +83,7 @@ class Database:
 
         #self.conn.commit()
 
-    def Remove(self, table, _id):
-        statement = 'DELETE FROM {0} WHERE id = ?'.format(table)
+    def Remove(self, table, _id, id_column='id'):
+        statement = 'DELETE FROM {0} WHERE {1} = ?'.format(table, id_column)
         self.cursor.execute(statement, [_id])
         #self.conn.commit()
