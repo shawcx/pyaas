@@ -33,11 +33,10 @@ class Login(tornado.web.RequestHandler):
             self.set_secure_cookie('uid', username)
 
         except ldap.INVALID_CREDENTIALS:
-            # do nothing, secure cookie will not be set
+            logging.warn('Invalid credentials for user: %s', username)
             pass
 
         except ldap.SERVER_DOWN:
-            logging.warn('Could not connect to LDAP server')
-            self.set_secure_cookie('uid', username)
+            logging.warn('Could not connect to LDAP server: %s', ldap_uri)
 
         self.redirect(self.get_argument('next', '/'))
