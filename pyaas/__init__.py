@@ -1,5 +1,5 @@
 
-VERSION = '0.4.3'
+VERSION = '0.4.4'
 
 # a generic error class for throwing exceptions
 class error(Exception):
