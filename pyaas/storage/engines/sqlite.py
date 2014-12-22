@@ -68,7 +68,7 @@ class Database:
             raise pyaas.error('Problem executing statement')
 
         if id_column not in values:
-            values[key] = self.cursor.lastrowid
+            values[id_column] = self.cursor.lastrowid
 
         #self.conn.commit()
 
