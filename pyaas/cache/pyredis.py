@@ -47,5 +47,8 @@ class Cache(object):
     def remove(self, key, field):
         self._redis.hdel(key, field)
 
+    def removeall(self, key):
+        self._redis.delete(key)
+
     def getall(self, key):
         return self._redis.hgetall(key)
