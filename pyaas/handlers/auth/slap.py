@@ -19,10 +19,10 @@ class Login(tornado.web.RequestHandler):
     def post(self):
         username = self.get_argument('username', '')
         username = tornado.escape.xhtml_escape(username)
-        password = self.get_argument('passwd', '')
+        password = self.get_argument('password', '')
 
-        ldap_dn  = pyaas.config.get('ldap', 'dn')
-        ldap_uri = pyaas.config.get('ldap', 'uri')
+        ldap_dn  = pyaas.config.get('slap', 'dn')
+        ldap_uri = pyaas.config.get('slap', 'uri')
 
         try:
             dn = ldap_dn.format(username)
@@ -34,7 +34,6 @@ class Login(tornado.web.RequestHandler):
 
         except ldap.INVALID_CREDENTIALS:
             logging.warn('Invalid credentials for user: %s', username)
-            pass
 
         except ldap.SERVER_DOWN:
             logging.warn('Could not connect to LDAP server: %s', ldap_uri)
