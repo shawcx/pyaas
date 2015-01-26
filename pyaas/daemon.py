@@ -36,41 +36,42 @@ class Daemonize(object):
             raise pyaas.error('Unknown daemon option')
 
     def daemonize(self):
-        try:
-            pid = os.fork()
-        except OSError as e:
-            logging.critical('EXCEPTION: os.fork: %d (%s)', e.errno, e.strerror)
-            sys.exit(-1)
+        if not pyaas.args.debug:
+            try:
+                pid = os.fork()
+            except OSError as e:
+                logging.critical('EXCEPTION: os.fork: %d (%s)', e.errno, e.strerror)
+                sys.exit(-1)
 
-        if pid > 0:
-            sys.exit(0)
+            if pid > 0:
+                sys.exit(0)
 
-        # clear environment
-        os.chdir("/")
-        os.setsid()
-        os.umask(0)
+            # clear environment
+            os.chdir("/")
+            os.setsid()
+            os.umask(0)
 
-        # fork again
-        try:
-            pid = os.fork()
-        except OSError as e:
-            logging.critical('EXCEPTION: os.fork: %d (%s)', e.errno, e.strerror)
-            sys.exit(-1)
+            # fork again
+            try:
+                pid = os.fork()
+            except OSError as e:
+                logging.critical('EXCEPTION: os.fork: %d (%s)', e.errno, e.strerror)
+                sys.exit(-1)
 
-        if pid > 0:
-            sys.exit(0)
+            if pid > 0:
+                sys.exit(0)
 
-        # redirect file handles
-        sys.stdout.flush()
-        sys.stderr.flush()
+            # redirect file handles
+            sys.stdout.flush()
+            sys.stderr.flush()
 
-        stdin  = open(self.STDIN,  'r'    )
-        stdout = open(self.STDOUT, 'a+'   )
-        stderr = open(self.STDERR, 'a+', 0)
+            stdin  = open(self.STDIN,  'r'    )
+            stdout = open(self.STDOUT, 'a+'   )
+            stderr = open(self.STDERR, 'a+', 0)
 
-        os.dup2(stdin.fileno(),  sys.stdin.fileno() )
-        os.dup2(stdout.fileno(), sys.stdout.fileno())
-        os.dup2(stderr.fileno(), sys.stderr.fileno())
+            os.dup2(stdin.fileno(),  sys.stdin.fileno() )
+            os.dup2(stdout.fileno(), sys.stdout.fileno())
+            os.dup2(stderr.fileno(), sys.stderr.fileno())
 
         # write pidfile
         #atexit.register(self.delpid)

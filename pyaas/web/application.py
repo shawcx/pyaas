@@ -47,8 +47,8 @@ class Application(tornado.web.Application):
 
         # Tornado settings
         self.settings = dict(
-            static_path   = pyaas.paths.static,
-            template_path = pyaas.paths.templates,
+            static_path   = os.path.join(pyaas.paths.share, 'static'),
+            template_path = os.path.join(pyaas.paths.share, 'templates'),
             cookie_secret = cookie_secret,
             debug         = False
         )

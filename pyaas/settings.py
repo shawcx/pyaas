@@ -3,6 +3,7 @@ import sys
 import os
 import argparse
 import collections
+import inspect
 import logging
 
 try:
@@ -35,7 +36,7 @@ pyaas.argparser.add_argument('--debug', '-d',
 logging.basicConfig(
     format  = '%(asctime)s %(levelname)-8s %(message)s',
     datefmt = '%Y-%m-%d %H:%M:%S',
-    level   = 0
+    level   = logging.INFO
 )
 
 
@@ -69,4 +70,68 @@ def load(program=None):
 
     # TODO: log to file
 
-    #root = logging.getLogger()
+    if pyaas.args.debug:
+        root = logging.getLogger()
+        root.setLevel(logging.DEBUG)
+
+
+def setPrefix(prefix=None):
+    if not prefix:
+        # inspect who called this function
+        frames = inspect.getouterframes(inspect.currentframe())
+        # get the caller frame
+        frame = frames[-1]
+        # get the filename of the caller
+        prefix = os.path.abspath(frame[1])
+        # get the directory name of the file
+        prefix = os.path.dirname(prefix)
+
+        if prefix.endswith(os.path.sep + 'bin'):
+            prefix = os.path.join(prefix, '..')
+            prefix = os.path.abspath(prefix)
+
+    prefix = os.path.abspath(prefix)
+    if pyaas.prefix != prefix:
+        pyaas.prefix = prefix
+        logging.debug('Setting prefix to "%s"', pyaas.prefix)
+
+
+def setNameSpace(namespace=None):
+    if namespace is None:
+        # inspect who called this function
+        frames = inspect.getouterframes(inspect.currentframe())
+        # get the caller frame
+        frame = frames[-1]
+        namespace = os.path.basename(frame[1]).split('.')[0]
+
+    if namespace != pyaas.namespace:
+        pyaas.namespace = namespace
+        logging.debug('Setting namespace to "%s"', pyaas.namespace)
+
+
+def init(prefix='', namespace='', settings=None):
+    """
+    Call this guy to init pyaas stuffs
+    :param prefix: The root path of the app
+    :param namespace: The namespace
+    :param settings: Alternative name of ini file to load
+    :return: None
+    """
+
+    # Set my prefix
+    setPrefix(prefix)
+    # Set my namespace
+    setNameSpace(namespace)
+
+    Paths = collections.namedtuple('Paths', ['etc', 'share'])
+    pyaas.paths = Paths(
+        etc   = os.path.join(pyaas.prefix, 'etc',   pyaas.namespace),
+        share = os.path.join(pyaas.prefix, 'share', pyaas.namespace)
+        )
+
+    # Init settings
+    pyaas.settings.load(settings)
+
+    # Init global modules
+    pyaas.module.Cache().load()
+    pyaas.module.Storage().load()

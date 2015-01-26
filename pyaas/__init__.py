@@ -21,7 +21,7 @@ from . import util
 from . import settings
 from . import module
 
-from .util import init
+from .settings import init
 
 prefix      = None
 namespace   = None
