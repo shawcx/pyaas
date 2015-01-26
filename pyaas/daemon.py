@@ -9,7 +9,10 @@ import logging
 
 import pyaas
 
-pyaas.argparser.add_argument('daemon', help='(start|stop|restart)')
+pyaas.argparser.add_argument('daemon',
+    metavar='(start|stop|restart)',
+    help='Control the state of the service'
+    )
 
 class Daemonize(object):
     STDIN  = os.path.devnull
@@ -108,9 +111,8 @@ class Daemonize(object):
         pid = self._getpid()
 
         if pid:
-            message = "pidfile %s already exist. Daemon already running?\n"
-            sys.stderr.write(message % self.pidfile)
-            sys.exit(1)
+            logging.error('Daemon appears to be running')
+            sys.exit(-1)
 
         # Start the daemon
         self.daemonize()
@@ -119,11 +121,8 @@ class Daemonize(object):
     def stop(self):
         pid = self._getpid()
 
-        print '????', pid
-
         if not pid:
-            message = "pidfile %s does not exist. Daemon not running?\n"
-            sys.stderr.write(message % self.pidfile)
+            logging.warn('Daemon appears to not be running')
             return
 
         try:
