@@ -54,13 +54,6 @@ import pyaas.daemon
 import example
 import example.app
 
-def entry():
-    app = example.app.ExampleApp()
-    try:
-        app.Listen()
-    except KeyboardInterrupt:
-        app.Stop()
-
 def runExampleApp():
     # Set the root for pyaas to this directory
     # If a path is not passed then pyaas will derive the path
@@ -74,6 +67,13 @@ def runExampleApp():
 
     pyaas.init(namespace='example')
     pyaas.daemon.Daemonize(entry)
+
+def entry():
+    app = example.app.ExampleApp()
+    try:
+        app.Listen()
+    except KeyboardInterrupt:
+        app.Stop()
 
 if '__main__' == __name__:
     try:

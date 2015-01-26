@@ -1,5 +1,4 @@
 
-import pyaas
 import pyaas.web
 
 class ExampleApp(pyaas.web.Application):
