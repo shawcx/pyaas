@@ -32,7 +32,7 @@ setup(
     scripts=[
         'bin/example.py',
     ],
-    data_files=add_data_files('etc', 'share'),
+    data_files=add_data_files('etc', 'share', 'var'),
     install_requires=[
         'pyaas >= 0.3.9',
     ],
