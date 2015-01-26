@@ -14,7 +14,7 @@ zf.close()
 
 setup(
     name='pyaas',
-    version='0.4.5',
+    version='0.5.0',
     author='Matthew Oertle',
     author_email='moertle@gmail.com',
     url='https://github.com/moertle/pyaas',
@@ -23,9 +23,12 @@ setup(
     long_description=open('README.rst').read(),
     packages=[
         'pyaas',
-        'pyaas.handlers',
-        'pyaas.handlers.auth',
-        'pyaas.handlers.ws',
+        # web service components
+        'pyaas.web',
+        'pyaas.web.handlers',
+        'pyaas.web.handlers.auth',
+        'pyaas.web.handlers.ws',
+        # storage components
         'pyaas.storage',
         'pyaas.storage.engines',
         'pyaas.storage.cache',

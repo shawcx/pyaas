@@ -35,15 +35,31 @@
 # directory and init() (see below) will resolve accordingly
 
 # This bit just ensures that this file isn't on the module search path
-import inspect, os, sys
-localpath = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-sys.path = filter(lambda path: path != localpath, sys.path)
+import sys
+import os
+
+# used for development
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+# used if not using a bin directory
+#import inspect
+#localpath = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+#sys.path = [p for p in sys.path if p != localpath]
 
 import logging
 
 import pyaas
+import pyaas.daemon
+
 import example
 import example.app
+
+def entry():
+    app = example.app.ExampleApp()
+    try:
+        app.Listen()
+    except KeyboardInterrupt:
+        app.Stop()
 
 def runExampleApp():
     # Set the root for pyaas to this directory
@@ -56,13 +72,8 @@ def runExampleApp():
     # Calling init() without args is equivalent to:
     # pyaas.init(prefix='/full/path/to/example', namespace='example', settings='example')
 
-    pyaas.init()
-
-    app = example.app.ExampleApp()
-    try:
-        app.Listen()
-    except KeyboardInterrupt:
-        app.Stop()
+    pyaas.init(namespace='example')
+    pyaas.daemon.Daemonize(entry)
 
 if '__main__' == __name__:
     try:

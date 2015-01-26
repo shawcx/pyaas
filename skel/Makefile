@@ -2,31 +2,28 @@
 # Dirty OS X hack
 PATH := $(PATH):/usr/local/bin
 
-COFFEE = PATH=$(PATH) coffee
-LESSC = PATH=$(PATH) lessc
+COFFEE = PATH="$(PATH)" coffee
+LESS = PATH="$(PATH)" lessc
 
-JS_OUT = share/static/js/example.js
-JS_SRC = src/example.litcoffee
+STATIC_ROOT = share/example/static
 
-WS_OUT = share/static/js/socket.js
-WS_SRC = src/socket.litcoffee
+COFFEE_FILES := $(wildcard src/*.litcoffee)
+JS_FILES := $(patsubst src/%.litcoffee, $(STATIC_ROOT)/js/%.js, $(COFFEE_FILES))
 
-CSS_OUT = share/static/css/example.css
+CSS_OUT = share/example/static/css/example.css
 CSS_SRC = src/example.less
 
-all: $(JS_OUT) $(WS_OUT) $(CSS_OUT)
+all: $(JS_FILES) $(CSS_OUT)
 
-$(JS_OUT): $(JS_SRC)
-	$(COFFEE) -o `dirname $(JS_OUT)` -m -c $(JS_SRC)
-
-$(WS_OUT): $(WS_SRC)
-	$(COFFEE) -o `dirname $(WS_OUT)` -m -c $(WS_SRC)
+$(STATIC_ROOT)/js/%.js: src/%.litcoffee
+	$(COFFEE) -o `dirname $@` -m -c $<
 
 $(CSS_OUT): $(CSS_SRC)
-	$(LESSC) -x --no-color --include-path=src/external $< $@
+	$(LESS) -x --no-color --include-path=src/external $< $@
 
 clean:
+	@find . -type f -name \*.pyc -exec rm {} +
 
 distclean: clean
-	@rm -f $(JS_OUT) $(CSS_OUT)
+	@rm -f $(JS_FILES) $(CSS_OUT)
 

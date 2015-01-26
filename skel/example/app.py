@@ -1,13 +1,13 @@
 
 import pyaas
-import pyaas.handlers
+import pyaas.web
 
-class ExampleApp(pyaas.server.Application):
+class ExampleApp(pyaas.web.Application):
     def __init__(self):
         # important to use extend if using built-in authentication
         self.patterns = [
-            ( r'/',       pyaas.handlers.Index     ),
-            ( r'/(main)', pyaas.handlers.Protected ),
+            ( r'/',       pyaas.web.handlers.Index     ),
+            ( r'/(main)', pyaas.web.handlers.Protected ),
             ]
 
-        pyaas.server.Application.__init__(self)
+        pyaas.web.Application.__init__(self)

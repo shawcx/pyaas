@@ -1,5 +1,12 @@
 
-VERSION = '0.4.5'
+VERSION = '0.5.0'
+
+#import sys
+#import os
+#print '>' * 80
+#print __file__
+#print sys.path
+#print '>' * 80
 
 # a generic error class for throwing exceptions
 class error(Exception):
@@ -10,10 +17,10 @@ class error(Exception):
         return self.str
 
 
-from . import settings
 from . import util
-from . import server
+from . import settings
 from . import module
+
 from .util import init
 
 prefix      = None
