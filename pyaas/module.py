@@ -163,7 +163,7 @@ class Auth(PyaasModule):
     Pyaas auth module
     """
     def __init__(self):
-        super(Auth, self).__init__('auth', 'pyaas.handlers.auth', 'Login')
+        super(Auth, self).__init__('auth', 'pyaas.web.handlers.auth', 'Login')
 
     def load(self, application=None):
         login = self.getClass()
@@ -171,7 +171,7 @@ class Auth(PyaasModule):
             # extend the patterns and settings accordingly
             application.patterns.extend([
                 ( r'/login',  login                      ),
-                ( r'/logout', pyaas.handlers.auth.Logout ),
+                ( r'/logout', pyaas.web.handlers.auth.Logout ),
                 ])
 
             application.settings['login_url'] = '/login'
@@ -203,5 +203,4 @@ class Cache(PyaasModule):
         pyaas.cache = self.getInstance()
         if pyaas.cache:
             logging.debug('Enabled cache: %s', self.implName)
-
 

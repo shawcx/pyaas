@@ -68,11 +68,24 @@ def load(program=None):
     if not ok:
         raise pyaas.error('Unable to read config file(s): %s', ini_files)
 
-    # TODO: log to file
+    # setup file log
+    root = logging.getLogger()
+    fh = logging.FileHandler(os.path.join(pyaas.paths.var, program + '.log'))
+    fh.setLevel(logging.INFO)
 
     if pyaas.args.debug:
-        root = logging.getLogger()
         root.setLevel(logging.DEBUG)
+        fh.setLevel(logging.DEBUG)
+
+    formatter = logging.Formatter(
+        fmt = '%(asctime)s %(levelname)-8s %(message)s',
+        datefmt = '%Y-%m-%d %H:%M:%S',
+        )
+
+    fh.setFormatter(formatter)
+
+    # add the handlers to the logger
+    root.addHandler(fh)
 
 
 def setPrefix(prefix=None):
@@ -93,7 +106,7 @@ def setPrefix(prefix=None):
     prefix = os.path.abspath(prefix)
     if pyaas.prefix != prefix:
         pyaas.prefix = prefix
-        logging.debug('Setting prefix to "%s"', pyaas.prefix)
+        logging.info('Setting prefix to "%s"', pyaas.prefix)
 
 
 def setNameSpace(namespace=None):
@@ -106,7 +119,7 @@ def setNameSpace(namespace=None):
 
     if namespace != pyaas.namespace:
         pyaas.namespace = namespace
-        logging.debug('Setting namespace to "%s"', pyaas.namespace)
+        logging.info('Setting namespace to "%s"', pyaas.namespace)
 
 
 def init(prefix='', namespace='', settings=None):
@@ -123,10 +136,11 @@ def init(prefix='', namespace='', settings=None):
     # Set my namespace
     setNameSpace(namespace)
 
-    Paths = collections.namedtuple('Paths', ['etc', 'share'])
+    Paths = collections.namedtuple('Paths', ['etc', 'share', 'var'])
     pyaas.paths = Paths(
         etc   = os.path.join(pyaas.prefix, 'etc',   pyaas.namespace),
-        share = os.path.join(pyaas.prefix, 'share', pyaas.namespace)
+        share = os.path.join(pyaas.prefix, 'share', pyaas.namespace),
+        var   = os.path.join(pyaas.prefix, 'var',   pyaas.namespace),
         )
 
     # Init settings
