@@ -146,6 +146,7 @@ def init(prefix='', namespace='', settings=None):
     # Init settings
     pyaas.settings.load(settings)
 
+def postinit():
     # Init global modules
     pyaas.module.Cache().load()
     pyaas.module.Storage().load()
