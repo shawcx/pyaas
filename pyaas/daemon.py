@@ -36,42 +36,44 @@ class Daemonize(object):
             raise pyaas.error('Unknown daemon option')
 
     def daemonize(self):
-        if not pyaas.args.debug:
-            try:
-                pid = os.fork()
-            except OSError as e:
-                logging.critical('EXCEPTION: os.fork: %d (%s)', e.errno, e.strerror)
-                sys.exit(-1)
+        if pyaas.args.debug:
+            return
 
-            if pid > 0:
-                sys.exit(0)
+        try:
+            pid = os.fork()
+        except OSError as e:
+            logging.critical('EXCEPTION: os.fork: %d (%s)', e.errno, e.strerror)
+            sys.exit(-1)
 
-            # clear environment
-            os.chdir("/")
-            os.setsid()
-            os.umask(0)
+        if pid > 0:
+            sys.exit(0)
 
-            # fork again
-            try:
-                pid = os.fork()
-            except OSError as e:
-                logging.critical('EXCEPTION: os.fork: %d (%s)', e.errno, e.strerror)
-                sys.exit(-1)
+        # clear environment
+        os.chdir("/")
+        os.setsid()
+        os.umask(0)
 
-            if pid > 0:
-                sys.exit(0)
+        # fork again
+        try:
+            pid = os.fork()
+        except OSError as e:
+            logging.critical('EXCEPTION: os.fork: %d (%s)', e.errno, e.strerror)
+            sys.exit(-1)
 
-            # redirect file handles
-            sys.stdout.flush()
-            sys.stderr.flush()
+        if pid > 0:
+            sys.exit(0)
 
-            stdin  = open(self.STDIN,  'r'    )
-            stdout = open(self.STDOUT, 'a+'   )
-            stderr = open(self.STDERR, 'a+', 0)
+        # redirect file handles
+        sys.stdout.flush()
+        sys.stderr.flush()
 
-            os.dup2(stdin.fileno(),  sys.stdin.fileno() )
-            os.dup2(stdout.fileno(), sys.stdout.fileno())
-            os.dup2(stderr.fileno(), sys.stderr.fileno())
+        stdin  = open(self.STDIN,  'r'    )
+        stdout = open(self.STDOUT, 'a+'   )
+        stderr = open(self.STDERR, 'a+', 0)
+
+        os.dup2(stdin.fileno(),  sys.stdin.fileno() )
+        os.dup2(stdout.fileno(), sys.stdout.fileno())
+        os.dup2(stderr.fileno(), sys.stderr.fileno())
 
         # write pidfile
         #atexit.register(self.delpid)
@@ -123,7 +125,7 @@ class Daemonize(object):
         pid = self._getpid()
 
         if not pid:
-            logging.warn('Daemon appears to not be running')
+            logging.info('Daemon appears to not be running')
             return
 
         try:
