@@ -1,12 +1,5 @@
 
-VERSION = '0.5.0'
-
-#import sys
-#import os
-#print '>' * 80
-#print __file__
-#print sys.path
-#print '>' * 80
+from .version import VERSION
 
 # a generic error class for throwing exceptions
 class error(Exception):

@@ -12,9 +12,11 @@ for base,directories,filenames in os.walk('skel'):
         zf.write(path, path[5:])
 zf.close()
 
+execfile('pyaas/version.py')
+
 setup(
     name='pyaas',
-    version='0.5.0',
+    version=VERSION,
     author='Matthew Oertle',
     author_email='moertle@gmail.com',
     url='https://github.com/moertle/pyaas',
