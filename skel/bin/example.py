@@ -50,6 +50,7 @@ import logging
 
 import pyaas
 import pyaas.daemon
+import pyaas.storage
 
 import example
 import example.app
@@ -69,6 +70,8 @@ def runExampleApp():
     pyaas.daemon.Daemonize(entry)
 
 def entry():
+    pyaas.settings.postinit()
+
     app = example.app.ExampleApp()
     try:
         app.Listen()

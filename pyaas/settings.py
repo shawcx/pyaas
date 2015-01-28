@@ -69,23 +69,25 @@ def load(program=None):
         raise pyaas.error('Unable to read config file(s): %s', ini_files)
 
     # setup file log
+    logfile = logging.FileHandler(os.path.join(pyaas.paths.var, program + '.log'))
+    logfile.setLevel(logging.INFO)
+
+    logfile.setFormatter(
+        logging.Formatter(
+            fmt = '%(asctime)s %(levelname)-8s %(message)s',
+            datefmt = '%Y-%m-%d %H:%M:%S',
+            )
+        )
+
+    # add the handlers to the logger
     root = logging.getLogger()
-    fh = logging.FileHandler(os.path.join(pyaas.paths.var, program + '.log'))
-    fh.setLevel(logging.INFO)
+    root.addHandler(logfile)
 
     if pyaas.args.debug:
         root.setLevel(logging.DEBUG)
-        fh.setLevel(logging.DEBUG)
+        logfile.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter(
-        fmt = '%(asctime)s %(levelname)-8s %(message)s',
-        datefmt = '%Y-%m-%d %H:%M:%S',
-        )
-
-    fh.setFormatter(formatter)
-
-    # add the handlers to the logger
-    root.addHandler(fh)
+    return
 
 
 def setPrefix(prefix=None):
@@ -108,6 +110,8 @@ def setPrefix(prefix=None):
         pyaas.prefix = prefix
         logging.info('Setting prefix to "%s"', pyaas.prefix)
 
+    return
+
 
 def setNameSpace(namespace=None):
     if namespace is None:
@@ -120,6 +124,8 @@ def setNameSpace(namespace=None):
     if namespace != pyaas.namespace:
         pyaas.namespace = namespace
         logging.info('Setting namespace to "%s"', pyaas.namespace)
+
+    return
 
 
 def init(prefix='', namespace='', settings=None):
@@ -146,7 +152,12 @@ def init(prefix='', namespace='', settings=None):
     # Init settings
     pyaas.settings.load(settings)
 
+    return
+
+
 def postinit():
     # Init global modules
     pyaas.module.Cache().load()
     pyaas.module.Storage().load()
+
+    return

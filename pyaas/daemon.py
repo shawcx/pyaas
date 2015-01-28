@@ -37,6 +37,7 @@ class Daemonize(object):
 
     def daemonize(self):
         if pyaas.args.debug:
+            logging.debug('Staying in the foreground')
             return
 
         try:
