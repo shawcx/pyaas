@@ -26,13 +26,13 @@ class Instance(type):
         except KeyError:
             raise AttributeError(key)
 
-    @property
-    def instance(self):
-        return self.instance
-
-    @instance.setter
-    def instance(self, value):
-        self.instance = value
+#    @property
+#    def instance(self):
+#        return self.instance
+#
+#    @instance.setter
+#    def instance(self, value):
+#        self.instance = value
 
 
 class AbstractIntsance(Instance, abc.ABCMeta):
