@@ -3,7 +3,6 @@ import sys
 import os
 import argparse
 import collections
-import inspect
 import logging
 
 try:
@@ -14,6 +13,10 @@ except ImportError:
 import pyaas
 
 pyaas.argparser = argparse.ArgumentParser()
+
+pyaas.argparser.add_argument('--name',
+    help='Specify a name for the instance'
+    )
 
 pyaas.argparser.add_argument('--address', '-a',
     help = 'Interface to bind to')
@@ -92,12 +95,8 @@ def load(program=None):
 
 def setPrefix(prefix=None):
     if not prefix:
-        # inspect who called this function
-        frames = inspect.getouterframes(inspect.currentframe())
-        # get the caller frame
-        frame = frames[-1]
         # get the filename of the caller
-        prefix = os.path.abspath(frame[1])
+        prefix = pyaas.util.getParent()
         # get the directory name of the file
         prefix = os.path.dirname(prefix)
 

@@ -5,14 +5,17 @@ import os
 import atexit
 import signal
 import time
+import inspect
 import logging
 
 import pyaas
 
-subparser = pyaas.argparser.add_subparsers(dest='daemon')
-subparser.add_parser('start',   help='Starts %(prog)s daemon'  )
-subparser.add_parser('stop',    help='Stops %(prog)s daemon'   )
-subparser.add_parser('restart', help='Restarts %(prog)s daemon')
+
+pyaas.argparser.add_argument('daemon',
+    metavar='(start|stop|restart)',
+    help='Control the state of the service'
+    )
+
 
 class Daemonize(object):
     STDIN  = os.path.devnull
@@ -24,7 +27,13 @@ class Daemonize(object):
         self.args  = args
         self.kwds  = kwds
 
-        self.pidfile = '/tmp/pyaas-{}.pid'.format(entry.func_name)
+        script = pyaas.util.getParent()
+        # get the filename of the caller
+        script = os.path.basename(script)
+
+        name = pyaas.args.name or 'server'
+
+        self.pidfile = '/tmp/pyaas-{}-{}-{}.pid'.format(script, entry.func_name, name)
 
         if 'start' == pyaas.args.daemon:
             self.start()

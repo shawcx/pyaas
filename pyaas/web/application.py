@@ -21,6 +21,11 @@ class Application(tornado.web.Application):
     def __init__(self, section='server'):
         self.websockets = set()
 
+        section = pyaas.args.name or section
+
+        if not pyaas.config.has_section(section):
+            raise pyaas.error('Invalid instance name: %s', section)
+
         # get the interface and port to listen on
         self.addr = pyaas.args.address or pyaas.config.get(section, 'address')
         self.port = pyaas.args.port or pyaas.config.getint(section, 'port')
