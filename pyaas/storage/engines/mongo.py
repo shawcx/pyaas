@@ -12,7 +12,7 @@ except ImportError:
     raise pyaas.error('Missing pymongo module')
 
 
-class Database:
+class Mongo:
     def __init__(self, **kwds):
         self.dbserver = pyaas.args.dbhost  or pyaas.config.get('mongo', 'server')
         self.dbname   = pyaas.args.dbname  or pyaas.config.get('mongo', 'database')

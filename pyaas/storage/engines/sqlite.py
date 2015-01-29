@@ -9,7 +9,7 @@ except ImportError:
     raise pyaas.error('Missing sqlite3 module')
 
 
-class Database:
+class Sqlite:
     def __init__(self, path=None, schema=None):
         if path is None:
             path = ':memory:'

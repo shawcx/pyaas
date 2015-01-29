@@ -1,19 +1,44 @@
 
 import json
 import collections
+import abc
 
 import pyaas
 
 __all__ = ['Records', 'Record']
 
+class Instance(type):
+    def __getattr__(cls, key):
+        try:
+            return object.__getattribute__(cls, key)
+        except AttributeError:
+            try:
+                cls.instance = pyaas.databases[key]
+                return cls
+            except KeyError:
+                raise AttributeError(key)
 
-class Records:
+    def __getitem__(cls, key):
+        # TODO: set instance to an actual database class instance
+        try:
+            cls.instance = pyaas.databases[key]
+            return cls
+        except KeyError:
+            raise AttributeError(key)
+
+class AbstractIntsance(Instance, abc.ABCMeta):
+    'combined metaclass for MutableMapping'
+
+class Records(object):
+    __metaclass__ = Instance
+
     def __init__(self, records):
+        self.instance = self.__class__.instance
         self.records = records
 
     @classmethod
     def Read(cls, params=None, sort=None):
-        return cls(pyaas.db.Find(cls.RECORD.table(), params, sort))
+        return cls(cls.instance.Find(cls.RECORD.table(), params, sort))
 
     def Delete(self):
         for record in self.records:
@@ -22,7 +47,7 @@ class Records:
 
     @classmethod
     def Count(cls):
-        return pyaas.db.Count(cls.RECORD.table())
+        return cls.instance.Count(cls.RECORD.table())
 
 # List methods to iterate over the collection
 
@@ -42,14 +67,19 @@ class Records:
 
 
 class Record(collections.MutableMapping):
+    __metaclass__ = AbstractIntsance
+
     TABLE_NAME = None
     ID_COLUMN = 'id'
 
     def __init__(self, record):
+        self.instance = self.__class__.instance
+
         try:
             self.id = record[self.ID_COLUMN]
         except KeyError:
             self.id = None
+
         self.record = dict(record)
         self.Init()
 
@@ -67,24 +97,24 @@ class Record(collections.MutableMapping):
         return cls(values).Insert()
 
     def Insert(self):
-        pyaas.db.Insert(self.table(), self.record)
+        self.instance.Insert(self.table(), self.record)
         if self.id is None:
             self.id = self.record[self.ID_COLUMN]
         return self
 
     @classmethod
     def Read(cls, _id):
-        record = pyaas.db.FindOne(cls.table(), _id, cls.ID_COLUMN)
+        record = cls.instance.FindOne(cls.table(), _id, cls.ID_COLUMN)
         return cls(record) if record else None
 
     def Update(self, values=None):
         if values:
             self.record.update(values)
-        pyaas.db.Update(self.table(), self.record, self.ID_COLUMN)
+        self.instance.Update(self.table(), self.record, self.ID_COLUMN)
         return self
 
     def Delete(self):
-        pyaas.db.Remove(self.table(), self.id, self.ID_COLUMN)
+        self.instance.Remove(self.table(), self.id, self.ID_COLUMN)
         return True
 
 # Convenience function to access data as JSON

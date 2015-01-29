@@ -10,7 +10,7 @@ except ImportError:
     raise pyaas.error('Missing psycopg2 module')
 
 
-class Database:
+class Pgsql:
     def __init__(self, **kwds):
         self.schema = kwds.get('schema', None)
         if self.schema is not None:
