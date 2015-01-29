@@ -9,10 +9,10 @@ import logging
 
 import pyaas
 
-pyaas.argparser.add_argument('daemon',
-    metavar='(start|stop|restart)',
-    help='Control the state of the service'
-    )
+subparser = pyaas.argparser.add_subparsers(dest='daemon')
+subparser.add_parser('start',   help='Starts %(prog)s daemon'  )
+subparser.add_parser('stop',    help='Stops %(prog)s daemon'   )
+subparser.add_parser('restart', help='Restarts %(prog)s daemon')
 
 class Daemonize(object):
     STDIN  = os.path.devnull
