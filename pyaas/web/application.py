@@ -62,7 +62,17 @@ class Application(tornado.web.Application):
         if pyaas.args.debug:
             self.settings['debug'] = True
 
-        pyaas.module.Auth().load(self)
+        authModules = pyaas.module.PyaasModule.CLASSES.get('AuthModule', None)
+        if authModules:
+            for (name,authModule) in authModules.items():
+                # extend the patterns and settings accordingly
+                self.patterns.extend([
+                    ( authModule.URL, authModule ),
+                    ( r'/logout', pyaas.web.auth.Logout ),
+                    ])
+
+            logging.debug('Setting default login URL to: %s', authModule.URL)
+            self.settings['login_url'] = authModule.URL
 
 
     def Listen(self):

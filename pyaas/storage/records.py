@@ -13,7 +13,7 @@ class Instance(type):
             return object.__getattribute__(cls, key)
         except AttributeError:
             try:
-                cls.instance = pyaas.databases[key]
+                cls.instance = pyaas.storage.databases[key]
                 return cls
             except KeyError:
                 raise AttributeError(key)
@@ -21,13 +21,23 @@ class Instance(type):
     def __getitem__(cls, key):
         # TODO: set instance to an actual database class instance
         try:
-            cls.instance = pyaas.databases[key]
+            cls.instance = pyaas.storage.databases[key]
             return cls
         except KeyError:
             raise AttributeError(key)
 
+    @property
+    def instance(self):
+        return self.instance
+
+    @instance.setter
+    def instance(self, value):
+        self.instance = value
+
+
 class AbstractIntsance(Instance, abc.ABCMeta):
-    'combined metaclass for MutableMapping'
+    'combined metaclass to support MutableMapping'
+
 
 class Records(object):
     __metaclass__ = Instance

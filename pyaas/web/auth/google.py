@@ -8,7 +8,7 @@ import tornado.auth
 _domains = []
 
 
-class Login(tornado.web.RequestHandler, tornado.auth.GoogleMixin):
+class Google(tornado.web.RequestHandler, tornado.auth.GoogleMixin):
 
     @classmethod
     def initialize(cls, *args, **kwargs):

@@ -11,7 +11,7 @@ except ImportError:
     raise pyaas.error('Missing LDAP module')
 
 
-class Login(tornado.web.RequestHandler):
+class Slap(tornado.web.RequestHandler):
     def get(self):
         next = self.get_argument('next', '/')
         self.render('login.html', next=next)

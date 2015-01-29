@@ -13,7 +13,7 @@ import tornado.web
 
 # Passwords can be managed with Apache's htpasswd program
 
-class Login(tornado.web.RequestHandler):
+class Basic(tornado.web.RequestHandler):
     def get(self):
         self.render('login.html')
 

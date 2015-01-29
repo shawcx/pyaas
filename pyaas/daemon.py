@@ -128,6 +128,9 @@ class Daemonize(object):
 
         # Start the daemon
         self.daemonize()
+
+        pyaas.module.load()
+
         self.entry(*self.args, **self.kwds)
 
     def stop(self):

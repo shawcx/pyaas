@@ -1,206 +1,91 @@
 
-import pyaas
+import collections
 import logging
 
+import pyaas
 
-def _loadModuleImpl(moduleName, defaultPath):
-    """
-    Based on a module impl name, attempt to load the python module
-    If the module name is fully qualified, use that string only.  Otherwise,
-    Prepend the defaultPath
-    :param moduleName: module impl name (google or pgsql or my.module.module)
-    :param defaultPath: default path to find built in module impls
-    :return: The loaded python module
-    """
-
-    if '.' in moduleName:
-        moduleName = moduleName
-    else:
-        # all auth mechanisms need to be in this path
-        moduleName = defaultPath + '.' + moduleName
-
-    try:
-        module = __import__(moduleName)
-    except ImportError:
-        raise pyaas.error('Unknown module: "%s"', moduleName)
-
-    for sub in moduleName.split('.')[1:]:
-        module = getattr(module, sub)
-
-    return module
-
-def _loadModuleClass(clsname, moduleName, defaultPath):
-    """
-    Load the class within the module
-    :param clsname: The name of the class within the package (Login, Cache, or Database)
-    :param moduleName: module impl name (google or pgsql or my.module.module)
-    :param defaultPath: default path to find built in module impls
-    :return: The class
-    """
-    module = _loadModuleImpl(moduleName, defaultPath)
-    try:
-        cls = getattr(module, clsname)
-    except AttributeError:
-        raise pyaas.error('Failed to load class %s from %s', clsname, moduleName)
-    return cls
+moduleImports = dict(
+    auth    = 'pyaas.web.auth',
+    storage = 'pyaas.storage.engines',
+    cache   = 'pyaas.cache',
+    )
 
 
-def _initializeObject(obj, **options):
-    """
-    Attampts to invoke an initialize function/method on the given object
-    :param obj:
-    :param options:
-    :return:
-    """
-    func = None
-    if hasattr(obj, 'initialize'):
-        f = getattr(obj, 'initialize')
-        if callable(f):
-            func = f
-    if func is None and hasattr(obj, 'Initialize'):
-        f = getattr(obj, 'Initialize')
-        if callable(f):
-            func = f
+def load():
+    modules = dict(pyaas.config.items('modules'))
+    for module in modules:
+        try:
+            modulePath = pyaas.module.moduleImports[module]
+        except KeyError:
+            logging.error('Unknown module: %s', module)
+            continue
 
-    if func is not None and func.__self__ is obj:
-        func(**options)
+        # on import PyaasModules register themselves
+        __import__(pyaas.module.moduleImports[module])
+
+    for module,moduleClass in pyaas.module.PyaasModule.registry.items():
+        moduleClass.load()
+
+    return
+
+
+class RegisterModuleMeta(type):
+    def __init__(cls, name, bases, dct):
+        if not hasattr(cls, 'registry'):
+            # this is the base class.  Create an empty registry
+            cls.registry = {}
+        else:
+            # this is a derived class.  Add cls to the registry
+            cls.registry[name] = cls
+
+        super(RegisterModuleMeta, cls).__init__(name, bases, dct)
 
 
 class PyaasModule(object):
-    """
-    Defines a pyaas module.  Pyaas modules are parts of the system that may be configured
-    and/or extended.  These are things like database engines, authentication systems or
-    cache backends.
-    Available modules are: storage, cache, and auth
-    """
-    def __init__(self, name=None, defaultPackage=None, className=None):
-        self._name = name
-        self._defaultPackage = defaultPackage
-        self._className = className
-        self._cls = None
-        self._obj = None
-        self._implName = None
-        self._options = None
+    PKG_PATH = 'pyaas'
+    CLASSES = collections.defaultdict(dict)
 
-    @property
-    def name(self):
-        return self._name
+    __metaclass__ = RegisterModuleMeta
 
-    @name.setter
-    def name(self, value):
-        self._name = value
+    @classmethod
+    def load(cls):
+        raise NotImplementedError
 
-    @property
-    def defaultPackage(self):
-        return self._defaultPackage
+    @classmethod
+    def loadModule(cls, moduleName):
+        classes = cls.CLASSES[cls.__name__]
 
-    @defaultPackage.setter
-    def defaultPackage(self, value):
-        self._defaultPackage = value
+        try:
+            return classes[moduleName]
+        except KeyError:
+            # try to load the module
+            pass
 
-    @property
-    def className(self):
-        return self._className
+        # then try loading a pyaas module first
+        try:
+            path = cls.PKG_PATH + '.' + moduleName
+            module = __import__(path)
+        except ImportError:
+            # try loading a user-supplied module next
+            try:
+                path = moduleName
+                module = __import__(path)
+            except ImportError:
+                raise pyaas.error('Unknown module: %s', moduleName)
 
-    @className.setter
-    def className(self, value):
-        self._className = value
+        subPackageName = path
+        for subPackageName in subPackageName.split('.')[1:]:
+            module = getattr(module, subPackageName)
 
-    @property
-    def implName(self):
-        if self._implName is None:
-            name = self.name
-            if name in pyaas.args.__dict__:
-                self._implName = pyaas.args.__dict__[name]
-            elif pyaas.config.has_option('modules', name):
-                self._implName = pyaas.config.get('modules', name)
-        return self._implName
+        classname = subPackageName.capitalize()
 
-    @property
-    def options(self):
-        if self._options is None:
-            impl = self.implName
-            self._options = {}
-            if pyaas.config.has_section(impl):
-                self._options = dict(pyaas.config.items(impl))
-                logging.debug('%s options: %s', self.name, self._options)
-        return self._options
+        moduleClass = getattr(module, classname, None)
+        if moduleClass is None:
+            try:
+                moduleClass = getattr(module, 'Database')
+            except AttributeError:
+                raise pyaas.error('Bad module: %s', moduleName)
 
-    def getInstance(self):
-        if self._obj is None:
-            cls = self.getClass()
-            impl = self.implName
+        classes[moduleName] = moduleClass
 
-            if cls is None or impl is None:
-                return None
-
-            options = self.options
-            self._obj = cls(**options)
-            _initializeObject(self._obj)
-        return self._obj
-
-    def getClass(self):
-        if self._cls is None:
-            impl = self.implName
-            if impl is None:
-                return None
-
-            self._cls = _loadModuleClass(self.className, impl, self.defaultPackage)
-            if self._cls is None:
-                return None
-
-            _initializeObject(self._cls, **self.options)
-        return self._cls
-
-    def load(self, application=None):
-        raise Exception("load not implemented!")
-
-
-
-
-class Auth(PyaasModule):
-    """
-    Pyaas auth module
-    """
-    def __init__(self):
-        super(Auth, self).__init__('auth', 'pyaas.web.auth', 'Login')
-
-    def load(self, application=None):
-        login = self.getClass()
-        if login:
-            # extend the patterns and settings accordingly
-            application.patterns.extend([
-                ( r'/login',  login                      ),
-                ( r'/logout', pyaas.web.auth.Logout ),
-                ])
-
-            application.settings['login_url'] = '/login'
-
-            logging.debug('Enabled authentication: %s', self.implName)
-
-
-class Storage(PyaasModule):
-    """
-    Pyaas database module
-    """
-    def __init__(self):
-        super(Storage, self).__init__('storage', 'pyaas.storage.engines', 'Database')
-
-    def load(self, application=None):
-        pyaas.db = self.getInstance()
-        if pyaas.db:
-            logging.debug('Enabled storage: %s', self.implName)
-
-
-class Cache(PyaasModule):
-    """
-    Pyaas cache module
-    """
-    def __init__(self):
-        super(Cache, self).__init__('cache', 'pyaas.cache', 'Cache')
-
-    def load(self, application=None):
-        pyaas.cache = self.getInstance()
-        if pyaas.cache:
-            logging.debug('Enabled cache: %s', self.implName)
-
+        return moduleClass

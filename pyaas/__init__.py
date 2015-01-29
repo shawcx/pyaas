@@ -4,6 +4,7 @@ import os
 from .version import VERSION
 
 from . import util
+from . import module
 from . import settings
 from . import module
 
@@ -30,6 +31,3 @@ class Paths(object):
 paths       = Paths()
 prefix      = ''
 namespace   = ''
-
-db          = None
-cache       = None

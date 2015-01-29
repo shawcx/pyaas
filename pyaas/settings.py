@@ -105,11 +105,8 @@ def load(settings=None, namespace=None, prefix=None):
         root.setLevel(logging.DEBUG)
         logfile.setLevel(logging.DEBUG)
 
-    return
+    # call this here if there is no daemon option
+    if not hasattr(pyaas.args, 'daemon'):
+        pyaas.module.load()
 
-def postinit():
-    # Init global modules
-    #pyaas.module.Cache().load()
-    #pyaas.module.Storage().load()
     return
-
