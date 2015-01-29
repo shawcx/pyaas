@@ -32,7 +32,8 @@ setup(
         # storage components
         'pyaas.storage',
         'pyaas.storage.engines',
-        'pyaas.storage.cache',
+        # cache components
+        'pyaas.cache',
     ],
     package_data={
         'pyaas': ['skel.zip']

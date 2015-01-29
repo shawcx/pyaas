@@ -1,11 +1,11 @@
 
+import os
+
 from .version import VERSION
 
 from . import util
 from . import settings
 from . import module
-
-from .settings import init
 
 # a generic error class for throwing exceptions
 class error(Exception):
@@ -15,8 +15,21 @@ class error(Exception):
     def __str__(self):
         return self.str
 
-prefix      = None
-namespace   = None
-paths       = None
+
+class Paths(object):
+    def __getattr__(self, attribute):
+        try:
+            return object.__getattribute__(self, attribute)
+        except AttributeError:
+            return os.path.join(prefix, attribute, namespace)
+
+    def __call__(self, toplevel, *args):
+        return os.path.join(prefix, toplevel, namespace, *args)
+
+
+paths       = Paths()
+prefix      = ''
+namespace   = ''
+
 db          = None
 cache       = None

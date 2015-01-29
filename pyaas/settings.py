@@ -14,20 +14,6 @@ import pyaas
 
 pyaas.argparser = argparse.ArgumentParser()
 
-pyaas.argparser.add_argument('--name',
-    help='Specify a name for the instance')
-
-pyaas.argparser.add_argument('--address', '-a',
-    help = 'Interface to bind to')
-
-pyaas.argparser.add_argument('--port', '-p',
-    type=int,
-    help='Port to bind to')
-
-pyaas.argparser.add_argument('--newcookie',
-    action='store_true',
-    help='Generate a new cookie')
-
 pyaas.argparser.add_argument('--ini', '-i',
     help='Specify additional ini file')
 
@@ -42,12 +28,42 @@ logging.basicConfig(
 )
 
 
-def load(program=None):
-    if program is None:
-        program = os.path.basename(sys.argv[0])
 
-        if program.endswith('.py'):
-            program = program.rsplit('.', 1)[0]
+def load(settings=None, namespace=None, prefix=None):
+    """
+    Call this guy to init pyaas stuffs
+    :param settings: Alternative name of ini file to load
+    :param namespace: Namespace is used to derive paths, pass '' for an empty namespace
+    :param prefix: The root path of the app
+    :return: None
+    """
+
+    parent = pyaas.util.getParent()
+
+    if prefix is None:
+        # get the filename of the caller
+        # get the directory name of the file
+        prefix = os.path.dirname(parent)
+
+        if prefix.endswith(os.path.sep + 'bin'):
+            prefix = os.path.join(prefix, '..')
+            prefix = os.path.abspath(prefix)
+
+    prefix = os.path.abspath(prefix)
+    if pyaas.prefix != prefix:
+        pyaas.prefix = prefix
+        logging.debug('Setting prefix to "%s"', pyaas.prefix)
+
+    if namespace is None:
+        namespace = os.path.basename(parent)
+        namespace = namespace.rsplit('.', 1)[0]
+
+    if namespace != pyaas.namespace:
+        pyaas.namespace = namespace
+        logging.debug('Setting namespace to "%s"', pyaas.namespace)
+
+    # if settings is not passed in use the supplied or derived namespace
+    settings = settings or namespace
 
     pyaas.args = pyaas.argparser.parse_args()
 
@@ -55,8 +71,8 @@ def load(program=None):
     pyaas.config.optionxform = str
 
     ini_files = [
-        os.path.join(pyaas.prefix, 'etc', pyaas.namespace, program + '.ini'),
-        os.path.join(pyaas.prefix, 'etc', pyaas.namespace, program + '.ini.local')
+        pyaas.paths('etc', settings + '.ini'),
+        pyaas.paths('etc', settings + '.ini.local')
     ]
 
     if pyaas.args.ini:
@@ -71,7 +87,7 @@ def load(program=None):
         raise pyaas.error('Unable to read config file(s): %s', ini_files)
 
     # setup file log
-    logfile = logging.FileHandler(os.path.join(pyaas.paths.var, program + '.log'))
+    logfile = logging.FileHandler(pyaas.paths('var', settings + '.log'))
     logfile.setLevel(logging.INFO)
 
     logfile.setFormatter(
@@ -91,71 +107,9 @@ def load(program=None):
 
     return
 
-
-def setPrefix(prefix=None):
-    if not prefix:
-        # get the filename of the caller
-        prefix = pyaas.util.getParent()
-        # get the directory name of the file
-        prefix = os.path.dirname(prefix)
-
-        if prefix.endswith(os.path.sep + 'bin'):
-            prefix = os.path.join(prefix, '..')
-            prefix = os.path.abspath(prefix)
-
-    prefix = os.path.abspath(prefix)
-    if pyaas.prefix != prefix:
-        pyaas.prefix = prefix
-        logging.info('Setting prefix to "%s"', pyaas.prefix)
-
-    return
-
-
-def setNameSpace(namespace=None):
-    if namespace is None:
-        # inspect who called this function
-        frames = inspect.getouterframes(inspect.currentframe())
-        # get the caller frame
-        frame = frames[-1]
-        namespace = os.path.basename(frame[1]).split('.')[0]
-
-    if namespace != pyaas.namespace:
-        pyaas.namespace = namespace
-        logging.info('Setting namespace to "%s"', pyaas.namespace)
-
-    return
-
-
-def init(prefix='', namespace='', settings=None):
-    """
-    Call this guy to init pyaas stuffs
-    :param prefix: The root path of the app
-    :param namespace: The namespace
-    :param settings: Alternative name of ini file to load
-    :return: None
-    """
-
-    # Set my prefix
-    setPrefix(prefix)
-    # Set my namespace
-    setNameSpace(namespace)
-
-    Paths = collections.namedtuple('Paths', ['etc', 'share', 'var'])
-    pyaas.paths = Paths(
-        etc   = os.path.join(pyaas.prefix, 'etc',   pyaas.namespace),
-        share = os.path.join(pyaas.prefix, 'share', pyaas.namespace),
-        var   = os.path.join(pyaas.prefix, 'var',   pyaas.namespace),
-        )
-
-    # Init settings
-    pyaas.settings.load(settings)
-
-    return
-
-
 def postinit():
     # Init global modules
-    pyaas.module.Cache().load()
-    pyaas.module.Storage().load()
-
+    #pyaas.module.Cache().load()
+    #pyaas.module.Storage().load()
     return
+

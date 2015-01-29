@@ -2,7 +2,6 @@
 import os
 
 import pyaas
-import pyaas.storage.cache
 
 try:
     import psycopg2

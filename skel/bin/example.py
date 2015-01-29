@@ -56,17 +56,14 @@ import example
 import example.app
 
 def runExampleApp():
-    # Set the root for pyaas to this directory
-    # If a path is not passed then pyaas will derive the path
+    # Calling pyaas.settings.load() without args is equivalent to:
+    # pyaas.settings.load(prefix='/full/path/to/example', namespace='example', settings='example')
     #
-    # Set the namespace for the project,
+    # Passing an empty string as the namespace trims the paths
     # e.g. etc/example.ini vs etc/example/example.ini
     # -or- share/static/favicon.ico vs share/example/static/favicon.ico
-    #
-    # Calling init() without args is equivalent to:
-    # pyaas.init(prefix='/full/path/to/example', namespace='example', settings='example')
 
-    pyaas.init(namespace='example')
+    pyaas.settings.load(namespace='example')
     pyaas.daemon.Daemonize(entry)
 
 def entry():
