@@ -197,7 +197,7 @@ class Cache(PyaasModule):
     Pyaas cache module
     """
     def __init__(self):
-        super(Cache, self).__init__('cache', 'pyaas.storage.cache', 'Cache')
+        super(Cache, self).__init__('cache', 'pyaas.cache', 'Cache')
 
     def load(self, application=None):
         pyaas.cache = self.getInstance()

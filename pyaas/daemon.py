@@ -13,8 +13,7 @@ import pyaas
 
 pyaas.argparser.add_argument('daemon',
     metavar='(start|stop|restart)',
-    help='Control the state of the service'
-    )
+    help='Control the state of the service')
 
 
 class Daemonize(object):

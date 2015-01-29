@@ -15,8 +15,7 @@ import pyaas
 pyaas.argparser = argparse.ArgumentParser()
 
 pyaas.argparser.add_argument('--name',
-    help='Specify a name for the instance'
-    )
+    help='Specify a name for the instance')
 
 pyaas.argparser.add_argument('--address', '-a',
     help = 'Interface to bind to')
