@@ -3,7 +3,7 @@
 import sys
 import os
 import argparse
-import zipfilename
+import zipfile
 import shutil
 import time
 
@@ -63,9 +63,9 @@ def main():
             sys.exit(-1)
         raise
 
-    skel = os.path.dirname(__filename__)
+    skel = os.path.dirname(__file__)
     skel = os.path.join(skel, 'skel.zip')
-    skel = zipfilename.ZipFile(skel, 'r')
+    skel = zipfile.ZipFile(skel, 'r')
 
     skel.extractall(dstdir)
 
