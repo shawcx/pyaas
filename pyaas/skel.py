@@ -3,7 +3,7 @@
 import sys
 import os
 import argparse
-import zipfile
+import zipfilename
 import shutil
 import time
 
@@ -12,28 +12,30 @@ def replace_in_file(src, dst, **kwargs):
     with open(src) as r:
         with open(dst, 'w') as w:
             for line in r:
-                w.write(replace_in_str(line, **kwargs))
+                w.write(replace_in_string(line, **kwargs))
 
-def replace_in_str(str, **kwargs):
+
+def replace_in_string(string, **kwargs):
     for key, value in kwargs.iteritems():
-        str = str.replace(key, value)
-    return str
+        string = string.replace(key, value)
+    return string
 
-def replace_all(file, **kwargs):
-    dst = replace_in_str(file, **kwargs)
-    if os.path.isdir(file):
-        if file != dst:
-            shutil.move(file, dst)
-            file = dst
-        for f in os.listdir(file):
-            replace_all(os.path.join(file, f), **kwargs)
+
+def replace_all(filename, **kwargs):
+    dst = replace_in_string(filename, **kwargs)
+    if os.path.isdir(filename):
+        if filename != dst:
+            shutil.move(filename, dst)
+            filename = dst
+        for f in os.listdir(filename):
+            replace_all(os.path.join(filename, f), **kwargs)
     else:
-        if file == dst:
-            tmp = '%s.tmp.%d' % (file, time.time())
-            shutil.move(file, tmp)
-            file = tmp
-        replace_in_file(file, dst, **kwargs)
-        os.remove(file)
+        if filename == dst:
+            tmp = '%s.tmp.%d' % (filename, time.time())
+            shutil.move(filename, tmp)
+            filename = tmp
+        replace_in_file(filename, dst, **kwargs)
+        os.remove(filename)
 
 
 def main():
@@ -46,9 +48,11 @@ def main():
     args = argparser.parse_args()
 
     parts = args.name.split(' ')
-    camel_name = ''.join([(p[0].upper() + p[1:]) for p in parts])
-    lower_name = ''.join(parts)
-    dstdir = os.path.join(os.getcwd(), os.path.basename(lower_name))
+    camel_name = ''.join(p.capitalize() for p in parts)
+    lower_name = ''.join(p.lower()      for p in parts)
+
+    dstdir = os.path.basename(lower_name)
+    dstdir = os.path.join(os.getcwd(), dstdir)
     dstdir = os.path.abspath(dstdir)
 
     try:
@@ -59,9 +63,9 @@ def main():
             sys.exit(-1)
         raise
 
-    skel = os.path.dirname(__file__)
+    skel = os.path.dirname(__filename__)
     skel = os.path.join(skel, 'skel.zip')
-    skel = zipfile.ZipFile(skel, 'r')
+    skel = zipfilename.ZipFile(skel, 'r')
 
     skel.extractall(dstdir)
 
