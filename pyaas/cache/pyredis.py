@@ -1,5 +1,11 @@
 
-import redis
+import pyaas
+
+try:
+    import redis
+except ImportError:
+    raise pyaas.error('Missing redis module')
+
 
 class CacheTx(object):
 
