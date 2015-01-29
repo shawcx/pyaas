@@ -27,9 +27,8 @@ setup(
         'pyaas',
         # web service components
         'pyaas.web',
+        'pyaas.web.auth',
         'pyaas.web.handlers',
-        'pyaas.web.handlers.auth',
-        'pyaas.web.handlers.ws',
         # storage components
         'pyaas.storage',
         'pyaas.storage.engines',
