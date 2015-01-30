@@ -7,7 +7,7 @@ import pyaas
 moduleImports = dict(
     auth    = 'pyaas.web.auth',
     storage = 'pyaas.storage.engines',
-    cache   = 'pyaas.cache',
+    cache   = 'pyaas.storage.cache',
     )
 
 
@@ -23,7 +23,7 @@ def load():
         # on import PyaasModules register themselves
         __import__(pyaas.module.moduleImports[module])
 
-    for module,moduleClass in pyaas.module.PyaasModule.registry.items():
+    for module, moduleClass in pyaas.module.PyaasModule.registry.items():
         moduleClass.load()
 
     return

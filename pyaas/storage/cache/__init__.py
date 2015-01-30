@@ -16,7 +16,8 @@ class CacheModule(pyaas.module.PyaasModule):
 
         instances = pyaas.config.get('modules', 'cache')
         instances = [instance.strip() for instance in instances.split(',')]
-        for instance in instances.reverse():
+        instances.reverse()
+        for instance in instances:
             logging.info('Loading cache: %s', instance)
 
             if not pyaas.config.has_section(instance):
@@ -26,8 +27,8 @@ class CacheModule(pyaas.module.PyaasModule):
 
             cache_class = cls.loadModule(instance)
             if pyaas.cache is None:
-                pyaas.cache = cache_class(params)
+                pyaas.cache = cache_class(**params)
             else:
                 params['next'] = pyaas.cache
-                pyaas.cache = cache_class(params)
+                pyaas.cache = cache_class(**params)
         return
