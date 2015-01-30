@@ -30,7 +30,7 @@ class CacheTx(object):
         self._pipeline.execute()
 
 
-class Cache(object):
+class Pyredis(object):
 
     def __init__(self, **kwargs):
         self._redis = redis.StrictRedis(**kwargs)

@@ -31,3 +31,4 @@ class Paths(object):
 paths       = Paths()
 prefix      = ''
 namespace   = ''
+cache       = None

@@ -22,7 +22,7 @@ class CacheTx(object):
         self._l2.end()
 
 
-class Cache(object):
+class Memory(object):
 
     def __init__(self, l2):
         self._l1 = {}
