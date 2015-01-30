@@ -7,7 +7,7 @@ try:
     import psycopg2
     import psycopg2.extras
 except ImportError:
-    raise pyaas.error('Missing psycopg2 module')
+    raise pyaas.error('Missing psycopg2 (Postgresql) module')
 
 
 class Pgsql:
