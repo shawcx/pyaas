@@ -4,26 +4,30 @@ import logging
 import pyaas
 
 try:
-    import motor
-    #import pymongo
-    #import gridfs
+    import pymongo
+    import gridfs
     import bson
-    import bson.json_util
+    import motor
 except ImportError:
     raise pyaas.error('Missing motor (mongodb) module')
 
 
 class Mongo:
     def __init__(self, server, database, store=None):
-        self.mongo = motor.MotorClient(server)
+        self.mongo = pymongo.Connection(server)
+        self.motor = motor.MotorClient(server)
 
         self.mongo.document_class = bson.SON
+        self.motor.document_class = bson.SON
 
-        self.db = self.mongo[database]
+        self.db  = self.mongo[database]
+        self.mdb = self.motor[database]
         if store:
-            self.fs = motor.MotorGridFS(self.mongo[store])
+            self.fs  = gridfs.GridFS(self.mongo[store])
+            self.mfs = motor.MotorGridFS(self.motor[store])
         else:
-            self.fs = None
+            self.fs  = None
+            self.mfs = None
 
     def Initialize(self):
         return
