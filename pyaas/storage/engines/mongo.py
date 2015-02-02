@@ -21,7 +21,7 @@ class Mongo:
 
         self.db = self.mongo[database]
         if store:
-            self.fs = gridfs.GridFS(self.mongo[store])
+            self.fs = motor.MotorGridFS(self.mongo[store])
         else:
             self.fs = None
 
