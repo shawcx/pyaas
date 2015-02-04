@@ -8,6 +8,20 @@ import shutil
 import time
 
 
+
+def add_data_files(*include_dirs):
+    'called from setup.py in skeleton projects'
+    data_files = []
+    for include_dir in include_dirs:
+        for root, directories, filenames in os.walk(include_dir):
+            include_files = []
+            for filename in filenames:
+                include_files.append(os.path.join(root, filename))
+            if include_files:
+                data_files.append((root, include_files))
+    return data_files
+
+
 def replace_in_file(src, dst, **kwargs):
     with open(src) as r:
         with open(dst, 'w') as w:

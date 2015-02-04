@@ -1,4 +1,4 @@
-v0.5.3, 01-30-2015 -- Use motor for mongo support
+v0.5.3, 02-04-2015 -- Use motor for mongo support; skel support
 v0.5.2, 01-28-2015 -- Multiple storage instances support
 v0.5.1, 01-27-2015 -- Bug fixes
 v0.5.0, 01-26-2015 -- pyaas.web; pyaas.daemon; better logging
