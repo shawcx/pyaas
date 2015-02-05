@@ -15,6 +15,9 @@ pyaas.argparser.add_argument('daemon',
     metavar='(start|stop|restart)',
     help='Control the state of the service')
 
+pyaas.argparser.add_argument('--instance',
+    help='Name an instance to allow multiple copies to run')
+
 
 class Daemonize(object):
     STDIN  = os.path.devnull
@@ -30,9 +33,9 @@ class Daemonize(object):
         # get the filename of the caller
         script = os.path.basename(script)
 
-        name = pyaas.args.name or 'server'
+        instance = pyaas.args.instance or 'server'
 
-        self.pidfile = '/tmp/pyaas-{}-{}-{}.pid'.format(script, entry.func_name, name)
+        self.pidfile = '/tmp/pyaas-{}-{}-{}.pid'.format(script, entry.func_name, instance)
 
         if 'start' == pyaas.args.daemon:
             self.start()
