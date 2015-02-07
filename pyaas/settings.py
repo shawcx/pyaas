@@ -88,8 +88,9 @@ def load(settings=None, namespace=None, prefix=None):
         raise pyaas.error('Unable to read config file(s): %s', ini_files)
 
     # setup file log
-    file_name = '%s_%s.log' % (parent, time.strftime('%Y%m%d_%H%M%S'))
-    logfile = logging.FileHandler(pyaas.paths('var', file_name))
+    file_name = '%s_%s.log' % (parent.rsplit('.', 1)[0], time.strftime('%Y%m%d_%H%M%S'))
+    full_path = pyaas.paths('var', file_name)
+    logfile = logging.FileHandler(full_path)
     logfile.setLevel(logging.INFO)
 
     logfile.setFormatter(
