@@ -40,6 +40,8 @@ def load(settings=None, namespace=None, prefix=None):
     """
 
     parent = pyaas.util.getParent()
+    script_name = os.path.basename(parent)
+    script_name = script_name.rsplit('.', 1)[0]
 
     if prefix is None:
         # get the filename of the caller
@@ -56,8 +58,7 @@ def load(settings=None, namespace=None, prefix=None):
         logging.debug('Setting prefix to "%s"', pyaas.prefix)
 
     if namespace is None:
-        namespace = os.path.basename(parent)
-        namespace = namespace.rsplit('.', 1)[0]
+        namespace = script_name
 
     if namespace != pyaas.namespace:
         pyaas.namespace = namespace
@@ -88,7 +89,7 @@ def load(settings=None, namespace=None, prefix=None):
         raise pyaas.error('Unable to read config file(s): %s', ini_files)
 
     # setup file log
-    file_name = '%s_%s.log' % (parent.rsplit('.', 1)[0], time.strftime('%Y%m%d_%H%M%S'))
+    file_name = '%s_%s.log' % (script_name, time.strftime('%Y%m%d_%H%M%S'))
     full_path = pyaas.paths('var', file_name)
     logfile = logging.FileHandler(full_path)
     logfile.setLevel(logging.INFO)
