@@ -4,6 +4,7 @@ import os
 import argparse
 import collections
 import logging
+import time
 
 try:
     import configparser
@@ -87,7 +88,8 @@ def load(settings=None, namespace=None, prefix=None):
         raise pyaas.error('Unable to read config file(s): %s', ini_files)
 
     # setup file log
-    logfile = logging.FileHandler(pyaas.paths('var', settings + '.log'))
+    file_name = '%s_%s.log' % (parent, time.strftime('%Y%m%d_%H%M%S'))
+    logfile = logging.FileHandler(pyaas.paths('var', file_name))
     logfile.setLevel(logging.INFO)
 
     logfile.setFormatter(
