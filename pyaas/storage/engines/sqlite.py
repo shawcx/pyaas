@@ -15,8 +15,12 @@ class Sqlite:
         if path is None:
             path = ':memory:'
         else:
-            path = os.path.join(pyaas.prefix, path)
+            path = pyaas.paths('var', path)
             # TODO: make any missing directories
+
+        # Check if the db exists before we make a connection.  The connection
+        # will create the file but it will not yet have a schema.
+        self.exists = os.path.isfile(path)
 
         try:
             self.conn = sqlite3.connect(path)
@@ -29,10 +33,19 @@ class Sqlite:
         self.schema = schema
 
     def Initialize(self):
-        if self.schema and not os.path.exists(self.path):
-            schema = os.path.join(pyaas.prefix, self.schema)
-            logging.info('Attempt to load schema: %s', schema)
-            if schema and os.path.isfile(schema):
+        if self.schema and not self.exists:
+            schema = self.schema
+
+            # Attempt to find the schema.  This is kind of dumb but it
+            # prevents some old code from breaking.  At some point we
+            # might could remove this first condition
+            if not os.path.isfile(schema):
+                schema = os.path.join(pyaas.prefix, schema)
+            if not os.path.isfile(schema):
+                schema = pyaas.paths('etc', schema)
+
+            if os.path.isfile(schema):
+                logging.info('Attempt to load schema: %s', schema)
                 schema = open(schema, 'rb').read()
                 self.cursor.executescript(schema)
                 self.conn.commit()
