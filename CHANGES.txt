@@ -1,3 +1,4 @@
+v0.5.5, 02-19-2015 -- Initialize database
 v0.5.4, 02-05-2015 -- Small bug
 v0.5.3, 02-04-2015 -- Use motor for mongo support; skel support
 v0.5.2, 01-28-2015 -- Multiple storage instances support
