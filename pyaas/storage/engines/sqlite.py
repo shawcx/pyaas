@@ -40,17 +40,17 @@ class Sqlite:
             # prevents some old code from breaking.  At some point we
             # might could remove this first condition
             if not os.path.isfile(schema):
-                schema = os.path.join(pyaas.prefix, schema)
+                schema = os.path.join(pyaas.prefix, self.schema)
             if not os.path.isfile(schema):
-                schema = pyaas.paths('etc', schema)
+                schema = pyaas.paths('etc', self.schema)
 
             if os.path.isfile(schema):
-                logging.info('Attempt to load schema: %s', schema)
+                logging.debug('Attempt to load schema: %s', schema)
                 schema = open(schema, 'rb').read()
                 self.cursor.executescript(schema)
                 self.conn.commit()
             else:
-                logging.info('Schema not found: %s', schema)
+                logging.debug('Schema not found: %s', schema)
 
     def Sync(self):
         self.conn.commit()
