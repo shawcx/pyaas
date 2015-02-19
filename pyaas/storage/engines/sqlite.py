@@ -2,6 +2,7 @@
 import os
 
 import pyaas
+import logging
 
 try:
     import sqlite3
@@ -22,17 +23,21 @@ class Sqlite:
         except sqlite3.OperationalError:
             raise pyaas.error('Unable to open database: %s', path)
 
+        self.path = path
         self.conn.row_factory = sqlite3.Row
         self.cursor = self.conn.cursor()
         self.schema = schema
 
     def Initialize(self):
-        if self.schema:
+        if self.schema and not os.path.exists(self.path):
             schema = os.path.join(pyaas.prefix, self.schema)
+            logging.info('Attempt to load schema: %s', schema)
             if schema and os.path.isfile(schema):
                 schema = open(schema, 'rb').read()
                 self.cursor.executescript(schema)
                 self.conn.commit()
+            else:
+                logging.info('Schema not found: %s', schema)
 
     def Sync(self):
         self.conn.commit()

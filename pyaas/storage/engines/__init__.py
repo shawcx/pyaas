@@ -43,6 +43,7 @@ class StorageModule(pyaas.module.PyaasModule):
             isCritical = options.pop('critical', 'true')
             try:
                 pyaas.storage.databases[instance] = engineClass(**options)
+                pyaas.storage.databases[instance].Initialize()
             except pyaas.error as e:
                 if isCritical.lower() in ['false', 'f' 'no', 'n', '0']:
                     logging.warn('Unable to instantiate engine: %s:%s', engine, instance)
