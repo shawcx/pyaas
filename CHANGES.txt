@@ -1,3 +1,4 @@
+v0.5.7, 02-27-2015 -- Support shadow accounts in LDAP
 v0.5.6, 02-19-2015 -- Database path fix
 v0.5.5, 02-19-2015 -- Initialize database
 v0.5.4, 02-05-2015 -- Small bug

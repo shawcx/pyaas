@@ -1,4 +1,5 @@
 
+import time
 import logging
 
 import pyaas
@@ -28,9 +29,22 @@ class Slap(tornado.web.RequestHandler):
             dn = ldap_dn.format(username)
             ldap_server = ldap.initialize(ldap_uri)
             ldap_server.bind_s(dn, password)
-            ldap_server.unbind()
+
+            record = ldap_server.search_s(dn, ldap.SCOPE_BASE, '(objectClass=*)')[0][1]
+            if 'shadowMax' in record and 'shadowLastChange' in record:
+                shadowMax = int(['shadowMax'][0])
+                lastChange = int(['shadowLastChange'][0])
+
+                if ((time.time() / 86400) - shadowMax) > lastChange:
+                    expired = pyaas.config.get('slap', 'expired', '/')
+                    self.redirect(expired)
+                    return
 
             self.set_secure_cookie('uid', username)
+            ldap_server.unbind()
+
+        except ldap.NO_SUCH_OBJECT:
+            logging.warn('Could not find record for user: %s', username)
 
         except ldap.INVALID_CREDENTIALS:
             logging.warn('Invalid credentials for user: %s', username)
