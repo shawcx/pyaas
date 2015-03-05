@@ -1,3 +1,4 @@
+v0.5.8, 03-05-2015 -- Preserve local ini files when upgrading projects
 v0.5.7, 03-05-2015 -- Added utility functions for the console
 v0.5.7, 02-27-2015 -- Support shadow accounts in LDAP
 v0.5.6, 02-19-2015 -- Database path fix
