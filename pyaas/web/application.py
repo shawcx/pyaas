@@ -62,6 +62,10 @@ class Application(tornado.web.Application):
         if pyaas.args.debug:
             self.settings['debug'] = True
 
+            self.patterns.append(
+                ( r'/src/(.*)', pyaas.web.handlers.Source ),
+                )
+
         authModules = pyaas.module.PyaasModule.CLASSES.get('AuthModule', None)
         if authModules:
             for (name,authModule) in authModules.items():
