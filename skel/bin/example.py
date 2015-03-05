@@ -67,8 +67,6 @@ def runExampleApp():
     pyaas.daemon.Daemonize(entry)
 
 def entry():
-    pyaas.settings.postinit()
-
     app = example.app.ExampleApp()
     try:
         app.Listen()
