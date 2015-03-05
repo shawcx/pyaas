@@ -1,0 +1,9 @@
+include *.rst
+include Makefile
+recursive-include bin   *
+recursive-include etc   *
+recursive-include share *
+recursive-include src   *
+recursive-include var   *
+recursive-exclude etc *.local
+recursive-exclude var *.log

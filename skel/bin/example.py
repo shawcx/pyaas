@@ -53,7 +53,6 @@ import pyaas.daemon
 import pyaas.storage
 
 import example
-import example.app
 
 def runExampleApp():
     # Calling pyaas.settings.load() without args is equivalent to:
@@ -67,7 +66,7 @@ def runExampleApp():
     pyaas.daemon.Daemonize(entry)
 
 def entry():
-    app = example.app.ExampleApp()
+    app = example.ExampleApp()
     try:
         app.Listen()
     except KeyboardInterrupt:

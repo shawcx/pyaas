@@ -4,7 +4,7 @@ import os
 
 from distutils.core import setup
 
-import pyaas
+import pyaas.skel
 
 setup(
     name='example',
