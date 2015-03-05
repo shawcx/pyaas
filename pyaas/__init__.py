@@ -3,6 +3,7 @@ import os
 
 from .version import VERSION
 
+from . import io
 from . import util
 from . import module
 from . import settings

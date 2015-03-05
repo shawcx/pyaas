@@ -12,7 +12,10 @@ for base,directories,filenames in os.walk('skel'):
         zf.write(path, path[5:])
 zf.close()
 
-execfile('pyaas/version.py')
+# Python 3 compatible
+with open('pyaas/version.py') as f:
+    code = compile(f.read(), 'version.py', 'exec')
+    exec(code)
 
 setup(
     name='pyaas',
