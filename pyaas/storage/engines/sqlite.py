@@ -82,8 +82,10 @@ class Sqlite:
 
         try:
             self.cursor.execute(statement, values.values())
-        except sqlite3.ProgrammingError:
-            raise pyaas.error('Problem executing statement')
+        except sqlite3.ProgrammingError as e:
+            raise pyaas.error('Problem executing statement: %s', e)
+        except sqlite3.IntegrityError as e:
+            raise pyaas.error('Integrity error: %s', e)
 
         if id_column not in values:
             values[id_column] = self.cursor.lastrowid

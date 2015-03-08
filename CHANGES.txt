@@ -1,3 +1,4 @@
+v0.5.9, 03-08-2015 -- Sqlite improvements
 v0.5.8, 03-05-2015 -- Preserve local ini files when upgrading projects
 v0.5.7, 03-05-2015 -- Added utility functions for the console
 v0.5.7, 02-27-2015 -- Support shadow accounts in LDAP
