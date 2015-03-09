@@ -60,7 +60,7 @@ class Sqlite:
         if params:
             statement += ' WHERE ' + params
         if sort:
-            statement += ''
+            statement += sort
 
         self.cursor.execute(statement)
         return self.cursor.fetchall()
