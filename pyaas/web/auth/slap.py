@@ -32,13 +32,20 @@ class Slap(tornado.web.RequestHandler):
 
             record = ldap_server.search_s(dn, ldap.SCOPE_BASE, '(objectClass=*)')[0][1]
             if 'shadowMax' in record and 'shadowLastChange' in record:
-                shadowMax = int(['shadowMax'][0])
-                lastChange = int(['shadowLastChange'][0])
+                try:
+                    shadowMax = int(record['shadowMax'][0])
+                    lastChange = int(record['shadowLastChange'][0])
+                except ValueError:
+                    # skip expiration check on exception
+                    shadowMax = time.time() / 86400
 
                 if ((time.time() / 86400) - shadowMax) > lastChange:
-                    expired = pyaas.config.get('slap', 'expired', '/')
-                    self.redirect(expired)
-                    return
+                    try:
+                        expired = pyaas.config.get('slap', 'expired')
+                        self.redirect(expired)
+                        return
+                    except:
+                        pass
 
             self.set_secure_cookie('uid', username)
             ldap_server.unbind()
