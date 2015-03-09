@@ -12,7 +12,6 @@ class Broadcast(tornado.websocket.WebSocketHandler):
 
     def open(self):
         self.stream.set_nodelay(True)
-
         self.websockets.add(self)
 
     def on_message(self, msg):
