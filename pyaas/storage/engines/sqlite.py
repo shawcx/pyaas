@@ -18,22 +18,24 @@ class Sqlite:
             path = pyaas.paths('var', path)
             # TODO: make any missing directories
 
-        # Check if the db exists before we make a connection.  The connection
-        # will create the file but it will not yet have a schema.
-        self.exists = os.path.isfile(path)
-
-        try:
-            self.conn = sqlite3.connect(path)
-        except sqlite3.OperationalError:
-            raise pyaas.error('Unable to open database: %s', path)
-
         self.path = path
-        self.conn.row_factory = sqlite3.Row
-        self.cursor = self.conn.cursor()
         self.schema = schema
 
+
     def Initialize(self):
-        if self.schema and not self.exists:
+        # Check if the db exists before we make a connection.  The connection
+        # will create the file but it will not yet have a schema.
+        exists = os.path.isfile(self.path)
+
+        try:
+            self.conn = sqlite3.connect(self.path)
+            self.conn.text_factory = str
+            self.conn.row_factory  = sqlite3.Row
+            self.cursor = self.conn.cursor()
+        except sqlite3.OperationalError:
+            raise pyaas.error('Unable to open database: %s', self.path)
+
+        if self.schema and not exists:
             schema = self.schema
 
             # Attempt to find the schema.  This is kind of dumb but it
@@ -51,6 +53,13 @@ class Sqlite:
                 self.conn.commit()
             else:
                 logging.debug('Schema not found: %s', schema)
+
+    def Cursor(self):
+        return self.conn.cursor()
+
+    def Close(self):
+        self.conn.commit()
+        self.conn.close()
 
     def Sync(self):
         self.conn.commit()
