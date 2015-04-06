@@ -90,6 +90,14 @@ def load(settings=None, namespace=None, prefix=None):
 
     # setup file log
     file_name = '%s_%s.log' % (script_name, time.strftime('%Y%m%d_%H%M%S'))
+
+    # hack back in single log file option without breaking existing code
+    if pyaas.config.has_section('logging'):
+        if pyaas.config.has_option('logging', 'append'):
+            append = pyaas.config.getboolean('logging', 'append')
+            if append:
+                file_name = script_name + '.log'
+
     full_path = pyaas.paths('var', file_name)
     logfile = logging.FileHandler(full_path)
     logfile.setLevel(logging.INFO)
