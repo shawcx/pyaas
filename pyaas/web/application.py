@@ -79,12 +79,18 @@ class Application(tornado.web.Application):
             self.settings['login_url'] = authModule.URL
 
 
-    def Listen(self):
+    def Listen(self, **kwds):
         # initialize here so patterns and settings can be extended by plugins
         tornado.web.Application.__init__(self, self.patterns, **self.settings)
 
+        if 'ssl_options' not in kwds:
+            kwds['ssl_options'] = self.ssl_options
+
+        if 'xheaders' not in kwds:
+            kwds['xheaders'] = True
+
         try:
-            self.listen(self.port, self.addr, xheaders=True, ssl_options=self.ssl_options)
+            self.listen(self.port, self.addr, **kwds)
         except socket.gaierror as e:
             if 8 == e.errno:
                 raise pyaas.error('Invalid address specified "%s"' % self.addr)
