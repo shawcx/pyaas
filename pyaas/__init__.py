@@ -1,7 +1,11 @@
 
 import os
 
-from .version import VERSION
+try:
+    from .version import full_version as VERSION
+except ImportError:
+    # just in case
+    VERSION = 'DEVELOPMENT'
 
 from . import io
 from . import util
