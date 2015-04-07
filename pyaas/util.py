@@ -44,6 +44,8 @@ def generate_version_file(infile='version.py.in', outfile='version.py', **kwargs
         if git_path is not None:
             git_cmd = [find_exe('git'), 'log', '--format=%h', '-1']
             repo_hash = subprocess.Popen(git_cmd, stdout=subprocess.PIPE).communicate()[0].strip()
+        if repo_hash.strip() == '':
+            repo_hash = '{now.hour}.{now.minute}.{now.second}'.format(now=now)
 
         sub_dict = {
             'repo_hash': repo_hash,
