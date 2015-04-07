@@ -1,0 +1,8 @@
+
+version = '$version'
+repo_hash = '$repo_hash'
+build_date = '$build_date'
+build_time = '$build_time'
+build_host = '$build_host'
+build_user = '$build_user'
+full_version = '$version+$build_date.$repo_hash'

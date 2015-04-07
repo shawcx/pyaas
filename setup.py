@@ -13,13 +13,17 @@ for base,directories,filenames in os.walk('skel'):
 zf.close()
 
 # Python 3 compatible
-with open('pyaas/version.py') as f:
-    code = compile(f.read(), 'version.py', 'exec')
-    exec(code)
+with open('pyaas/util.py') as f:
+    exec(compile(f.read(), 'util.py', 'exec'))
+version_file = generate_version_file(infile='pyaas/version.py.in', outfile='pyaas/version.py', version='0.5.13')
+if not version_file:
+    raise Exception('Failed to generate version file!')
+with open(version_file) as f:
+    exec(compile(f.read(), version_file, 'exec'))
 
 setup(
     name='pyaas',
-    version=VERSION,
+    version=version,
     author='Matthew Oertle',
     author_email='moertle@gmail.com',
     url='https://github.com/moertle/pyaas',
