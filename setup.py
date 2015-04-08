@@ -15,7 +15,7 @@ zf.close()
 # Python 3 compatible
 with open('pyaas/util.py') as f:
     exec(compile(f.read(), 'util.py', 'exec'))
-version_file = generate_version_file(infile='pyaas/version.py.in', outfile='pyaas/version.py', version='0.5.14')
+version_file = generate_version_file(infile='pyaas/version.py.in', outfile='pyaas/version.py', version='0.5.15')
 if not version_file:
     raise Exception('Failed to generate version file!')
 with open(version_file) as f:
@@ -23,7 +23,7 @@ with open(version_file) as f:
 
 setup(
     name='pyaas',
-    version=version,
+    version=VERSION,
     author='Matthew Oertle',
     author_email='moertle@gmail.com',
     url='https://github.com/moertle/pyaas',

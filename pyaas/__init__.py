@@ -2,7 +2,7 @@
 import os
 
 try:
-    from .version import full_version as VERSION
+    from .version import FULL_VERSION as VERSION
 except ImportError:
     # just in case
     VERSION = 'DEVELOPMENT'
