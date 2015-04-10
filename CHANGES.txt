@@ -1,3 +1,4 @@
+v0.5.16, 04-10-2015 -- Do not require a modules section in the ini file
 v0.5.15, 04-08-2015 -- Versions
 v0.5.13, 04-07-2015 -- Pass keyword arguments on Listen to HTTPServer
 v0.5.12, 03-29-2015 -- Single log file ability
