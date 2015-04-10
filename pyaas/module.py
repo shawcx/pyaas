@@ -12,6 +12,10 @@ moduleImports = dict(
 
 
 def load():
+    if not pyaas.config.has_section('modules'):
+        logging.debug('No modules defined')
+        return
+
     modules = dict(pyaas.config.items('modules'))
     for module in modules:
         try:
