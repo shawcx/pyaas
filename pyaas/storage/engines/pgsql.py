@@ -5,13 +5,22 @@ import pyaas
 
 try:
     import psycopg2
+    import psycopg2.extensions
     import psycopg2.extras
 except ImportError:
     raise pyaas.error('Missing psycopg2 (Postgresql) module')
 
+try:
+    import momoko
+except ImportError
+    raise pyaas.error('Missing momoko (Postgresql) module')
+
 
 class Pgsql:
     def __init__(self, **kwds):
+        psycopg2.extensions.string_types.pop(psycopg2.extensions.JSON.values[0], None)
+        psycopg2.extensions.string_types.pop(psycopg2.extensions.JSONARRAY.values[0], None)
+
         self.schema = kwds.get('schema', None)
         if self.schema is not None:
             del kwds['schema']
