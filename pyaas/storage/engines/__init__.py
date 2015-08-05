@@ -53,7 +53,7 @@ class StorageModule(pyaas.module.PyaasModule):
         try:
             opts = dict(options)
             opts['password'] = '****'
-            logging.debug('Loading storage instance %s with args %s', instance, opts)
+            logging.debug('%s args: %s', instance, opts)
             pyaas.storage.databases[instance] = db = engine_class(**options)
             db.Initialize()
             return db
