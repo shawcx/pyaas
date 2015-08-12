@@ -10,11 +10,6 @@ try:
 except ImportError:
     raise pyaas.error('Missing psycopg2 (Postgresql) module')
 
-try:
-    import momoko
-except ImportError
-    raise pyaas.error('Missing momoko (Postgresql) module')
-
 
 class Pgsql:
     def __init__(self, **kwds):
